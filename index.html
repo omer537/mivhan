@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מבחן סמינר – מכינת תוהו</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+:root {
+  --bg: #f0f4f8;
+  --card: #ffffff;
+  --accent: #1b3a5c;
+  --accent-light: #2a5a8c;
+  --accent-glow: rgba(27, 58, 92, 0.08);
+  --green: #2d8a4e;
+  --green-light: #3aaf63;
+  --teal: #4ab8a1;
+  --teal-light: #5fd4bb;
+  --correct: #2d8a4e;
+  --correct-bg: rgba(45, 138, 78, 0.08);
+  --wrong: #d94444;
+  --wrong-bg: rgba(217, 68, 68, 0.08);
+  --text: #1a2a3a;
+  --text-dim: #6b7d8e;
+  --border: #d8e2ec;
+  --gold: #e6a817;
+  --radius: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.7;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.katex { direction: ltr; display: inline-block; color: var(--accent); font-size: 1.1em; }
+.katex-display { direction: ltr; text-align: center; margin: 8px 0; }
+
+.hero {
+  background: linear-gradient(135deg, #1b3a5c 0%, #213d5e 40%, #1a4a6e 100%);
+  padding: 40px 20px 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40%; left: -40%;
+  width: 180%; height: 180%;
+  background: radial-gradient(circle at 25% 50%, rgba(74, 184, 161, 0.12) 0%, transparent 50%),
+              radial-gradient(circle at 75% 50%, rgba(45, 138, 78, 0.08) 0%, transparent 50%);
+  animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(20px, -20px); }
+  66% { transform: translate(-15px, 15px); }
+}
+
+.hero-logo {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.hero-logo img {
+  height: 60px;
+  filter: brightness(0) invert(1);
+}
+
+.hero-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.math-icon {
+  font-size: 2rem;
+  opacity: 0.9;
+}
+
+.hero h1 {
+  font-family: 'Rubik', sans-serif;
+  font-size: clamp(1.6rem, 4.5vw, 2.6rem);
+  font-weight: 700;
+  position: relative;
+  color: #ffffff;
+}
+
+.hero p {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.7);
+  position: relative;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px 20px 100px;
+}
+
+.name-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 36px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.name-section label {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--accent);
+}
+
+.name-section input {
+  width: 100%;
+  max-width: 400px;
+  padding: 13px 20px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Heebo', sans-serif;
+  font-size: 1.05rem;
+  text-align: center;
+  transition: border-color 0.3s;
+  outline: none;
+}
+
+.name-section input:focus { border-color: var(--teal); }
+
+.question-block {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 28px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.question-header {
+  background: linear-gradient(135deg, rgba(27, 58, 92, 0.06) 0%, rgba(74, 184, 161, 0.04) 100%);
+  padding: 18px 26px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.q-number {
+  background: linear-gradient(135deg, var(--accent) 0%, #2a5a8c 100%);
+  color: #fff;
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700; font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.question-header h2 {
+  font-family: 'Rubik', sans-serif;
+  font-size: 1.12rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.question-body { padding: 22px 26px; }
+
+.sub-question {
+  margin-bottom: 26px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.sub-question:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+.sq-label {
+  font-weight: 600;
+  color: var(--teal);
+  margin-bottom: 5px;
+  font-size: 0.93rem;
+}
+
+.sq-text {
+  margin-bottom: 14px;
+  font-size: 1.03rem;
+  line-height: 1.9;
+}
+
+.context-box {
+  background: rgba(74, 184, 161, 0.05);
+  border: 1px solid rgba(74, 184, 161, 0.18);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+  line-height: 2.2;
+}
+
+.context-box .step {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.context-box .step-num {
+  color: var(--accent);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 17px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  min-height: 50px;
+  background: #fff;
+}
+
+.option:hover { border-color: var(--teal); background: rgba(74,184,161,0.04); }
+.option.selected { border-color: var(--teal); background: rgba(74,184,161,0.06); }
+.option.correct { border-color: var(--correct); background: var(--correct-bg); }
+.option.wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+
+.option-letter {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 600; font-size: 0.9rem;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  color: var(--text-dim);
+}
+
+.option.selected .option-letter { background: var(--teal); color: #fff; }
+.option.correct .option-letter { background: var(--correct); color: #fff; }
+.option.wrong .option-letter { background: var(--wrong); color: #fff; }
+
+.option-text { font-size: 1rem; line-height: 1.6; flex: 1; }
+
+.diagnostic-tag {
+  display: none;
+  margin-top: 8px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.diagnostic-tag.show { display: inline-block; }
+.diagnostic-tag.excellent { background: rgba(45, 138, 78, 0.1); color: var(--green); }
+.diagnostic-tag.wrong-tag { background: rgba(217, 68, 68, 0.1); color: var(--wrong); }
+
+.submit-section { text-align: center; margin-top: 36px; }
+
+#submitBtn {
+  font-family: 'Rubik', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  padding: 15px 56px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent) 0%, #2a5a8c 100%);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 18px rgba(27, 58, 92, 0.25);
+}
+#submitBtn:hover { transform: translateY(-2px); box-shadow: 0 6px 26px rgba(27, 58, 92, 0.35); }
+#submitBtn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.results-card {
+  display: none;
+  background: var(--card);
+  border: 2px solid var(--teal);
+  border-radius: var(--radius);
+  padding: 38px;
+  text-align: center;
+  margin-top: 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+.results-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--teal), var(--green));
+}
+.results-card h2 { font-family: 'Rubik', sans-serif; font-size: 1.4rem; margin-bottom: 20px; color: var(--accent); }
+
+.score-circle {
+  width: 150px; height: 150px;
+  border-radius: 50%;
+  background: conic-gradient(var(--teal) var(--pct), var(--border) var(--pct));
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  position: relative;
+}
+.score-circle::after {
+  content: '';
+  width: 122px; height: 122px;
+  border-radius: 50%;
+  background: var(--card);
+  position: absolute;
+}
+.score-value {
+  position: relative; z-index: 1;
+  font-family: 'Rubik', sans-serif;
+  font-size: 2.4rem; font-weight: 700;
+  color: var(--accent);
+}
+
+.score-breakdown {
+  display: flex; justify-content: center; gap: 28px; margin-top: 18px; flex-wrap: wrap;
+}
+.breakdown-item { text-align: center; }
+.breakdown-item .num { font-family: 'Rubik', sans-serif; font-size: 1.7rem; font-weight: 700; }
+.breakdown-item .label { font-size: 0.85rem; color: var(--text-dim); }
+
+.topic-scores { margin-top: 28px; text-align: right; }
+.topic-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.topic-name { flex: 1; font-size: 0.95rem; }
+.topic-bar-bg { width: 120px; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.topic-bar { height: 100%; border-radius: 4px; transition: width 1s ease; }
+.topic-pct { font-family: 'Rubik', sans-serif; font-weight: 600; width: 45px; text-align: left; font-size: 0.9rem; }
+
+.status-msg { margin-top: 16px; padding: 12px; border-radius: 10px; font-size: 0.95rem; }
+.status-msg.sending { background: rgba(74,184,161,0.08); color: var(--teal); }
+.status-msg.sent { background: var(--correct-bg); color: var(--correct); }
+.status-msg.error { background: var(--wrong-bg); color: var(--wrong); }
+
+@media (max-width: 600px) {
+  .hero { padding: 32px 16px 28px; }
+  .hero-logo img { height: 48px; }
+  .container { padding: 20px 14px 80px; }
+  .question-header { padding: 14px 16px; }
+  .question-body { padding: 16px; }
+  .option { padding: 11px 13px; }
+  .results-card { padding: 26px 18px; }
+  .score-breakdown { gap: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-logo">
+    <img src="data:image/png;base64,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Kt/StUFZTKfC0uXzH+TbR/evRfYnX93G0/AVb+lan7uNp+Aq39K1QVlMp8LS5fMf5NtH969F9jY7Ru1G1alv0doFHPRSytJjdK8FryOO7w5HxKQuvFaaUlRNR1UVXTSOjmheHxvHQjGCtq9Aahg1PpmmukZaJnDcqGD7yQcx/wBx5CFqYigqdnHQ6f8Ap7bM8bvUq7vNZrRXXTwZkSIi1TqAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiICnoT0LGNWa+0dpOuiotR6gorZUTR91jjmcQXMyRkYHLIKs/wC7Rst/Ha1f13fUpqlOSuk2uhjIkBERQMhERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREBbNR2mmvllqrVVj96qGbpOMlp5hw8oIBHmWrV7ttTaLtU22rZuz08hY7xHqCPIQQQfEQtthxwop29aXNTRM1JSRky043KoDrHn3rvQT8h8i8zaWH7SG+tV9P9ang7dwPbUu1ivxR+a4+mpE2l7U++X6ktbJWxd2cd55H2LWtLnHz4acDqccuayrXWvmXexjTltozDb4XNY2Z78ulYz7H3uBu8QDj0cFhlpuFZarjDcLfMYKmE5ZIADjIIPAggggkEEciVfxri4xuMtJbLHR1LudRBb2CTPU5ORk+ZeRSqKNNxu03rle65a9TmsNXjToyp7zi5POyvdWySzVuN+d1mZFsn9m6m23O21FvlrrO+jc+OGpy2Bzw5p3Q8j3ucuPA8CM44L6RaX0K66y963aOuqWsD4rV34GRvec/vYnI98OWBz4cScqzaP1RdblrKkivl0qailrA6llic797IkYWAbgwBxI4gLFTbqoXr2JLR30KjvbdB4b+9u8/Ore1iqcbLes2s9fLXno7rLQ2/iaaoU0o76Ta/Fa60ata+t8k21loZ7tal1FUXinssNJWx0LaaLudLBG4xlwYC4DA9/u8PHjCttkqHaophpO9jFzhDm22rlGHseMkwyZ4kHlx5Hx8ArvcNoFw0/tBuZgfJX25ju9+9XylrAWNa0lvA7uHA5wOPFWWu2hV011ludPZbLT1jnEsqRS70zCRgHeJwXY649CnUlS7Rtybu2mmuHhw6FletQVeU5Tbu2nFq6aT4PTppZ8uOGva5jnMe0tc0kEEYII4HKv2gNOy6m1JT24ZEAPdKh4+9jHP0nl6fIrA9znvL3uLnE5JJyTnmT4ytitkGmPa9pps1TGG19biWbI4sH3rPQD8pKqwWH7aqk9Fm/t5mnsrBfF10mvwrN+y8/pczOmhip6eOCBjWRRtDGNaMBoHAAL5XCrgt9FNW1UgiggYZJHno0DJK9OQAoa7Q2qiyNmlaOXDn4lrS0/e82MPnPvseboV1dKm5yUUdjtHGwwOHlVlw0XN8ERdre/1GpdS1V2n3g17t2Fh/1cY4NHn6+clWVE8q9hJJJLRHyOrVlVm6k3dttt+LCK8Xaw1FFZ6K7xTR1dDVN3e7RZ/epce+jcObSOmeY4qzrCaauhUpTpPdmrOyfk801zTLtpC1svepaG0yyuiZVS7jntAy3gTwzwPJWkr1W2O4Gds1ujqu6xnLXwB280+MFvEFfCeGaCQxzxSRPH3r27p+Q8UWrzJNLsl+Fp3d3waaVl5NP1Pwic1d57DUUum4r1Wzx0wqH4pKd/8A4k7eOXgAcGjhxPA582TaWvEjClKom4q6Su/BfzJc3ksy0ehZ9sT1X7XtSiiqpt233AiOTJ4MfyY7j0ySDy55PJYCMphYnBTi4viW4TFTwtaNaGsXfrzXRrJm6HAZTxrBNjWqvbHphsFTJm4UIbFPk8Xj71/pHDzgrOx4wvHlFwbTPr2FxMMVRjVpvKSv/Oh+kRFE2AiIgCIiAIiIAiIgCIiAIiIBlEyrSdS6dHA361j+lx/WiVwXXCYVq9sunfh+1fPI/rT2y6d+H7V88j+tZswXXCYVq9sunfh+1fPI/rT2y6d+H7V88j+tLMF1wmFavbLp34ftXzyP609sunfh+1fPI/rSzBdvQnoVp9s2nfh+1fPI/rX3oLvaq+Yw0NzoqqUN3iyGdr3Bo4ZwDy4/2rFmD3oiIBxRW6svdmo5zT1l2oKeYc45ahjHDPHkTlfL2zad+H7V88j+tLMF2RfKnmhqIGTwSxyxPAcx7HBzXA9QRwK+qA037d3hFsnxSPXSLXYrYnt3eEWyfFI9dItdiumwPcRKJas6oYTCtXtl078P2r55H9ae2XTvw/avnkf1rmrMvLrhMK1e2XTvw/avnkf1p7ZdO/D9q+eR/WlmC64TCtXtl078P2r55H9ae2XTvw/avnkf1pZguyL5xSRzRMlie18b2hzXNOQ4HiCCOYVXuaxjnvcGtaMkk4AWAfrCYVq9sunfh+1fPI/rT2y6d+H7V88j+tZswXXCYVq9sunfh+1fPI/rT2y6d+H7V88j+tLMF2ReWirqKtZv0VXT1Lf4UMoePlC9SxoAiIgCIiAIiIBlEyrT7ZtOfD9q+eR/WiVwXXCYVq9sunfh+1fPI/rT2y6d+H7V88j+tZswXXCYVq9sunfh+1fPI/rT2y6d+H7V88j+tLMF1wmFavbLp34ftXzyP609sunfh+1fPI/rSzBdkVqj1DYZZGxx3u2Pkc4Na1tUwkk8gBniVdQsWsAVTiq8lZrlqnTVtrHUdy1BaaKpbguhqKyON7cjIy1zsjISzegLwq4WPe3jRf43af8A+JQ/rK9UlTBWU0dVSTxVFPK3ejlieHMe08iCOBCWa1B90RfOeWOCF800jY4mNLnvccBoHEknoBx5oD94TCtXtl078P2r55H9ae2XTvw/avnkf1rNmC64TCtXtl078P2r55H9ae2XTvw/avnkf1pZguvoT0K1e2XTvw/avnkf1r9R6hsErxHHe7a97uTW1bCT6MrFmLl0RUBDgCCCD1VUAREQBEKtUmobDFI6OS92xkjXFrmuqmAgjmCM8ClrguqZVp9s2nPh+1fPI/rV2yjVgEREATCK3114tNDP3CtulDTS43tyaoYx2PHgnlw/sQFwT0K0+2bTnw/avnkf1q4wSxzwsmikbJE9ocx7TkOB4ggjmDwSzB9UREAREQBERAEREAREQFBzXzqYIqmCSnnY2SKVpY9jhkOaRgg+hfRV6IYNWdd6el0zqSptrt4w57pTvP30Z5ekcvQrDwWxO2HS41Bpt1RTMzX0GZYsDi9v3zPSOI8oHlWvnetT+Dzfoz9S5fG4d0ajSWTzX28jgNqYF4Wu1Ffhea+3l9LHzje+ORskbi17CHNcDggg5BHiIKz9l/0xNdYtY1RlF4iiDn24QnuctS0ANlD+QbydjnkfLgnetR+Dzf1D9Sd6VOP83m/qH6lTTqSp6K/HPmtH5GtQxFSjdJJq6eavZrRrxXpzTPzPNLUVElRM4vkkcXvcepJJJ9Jyvwvr3rU/g839Q/UvpT2+tqJ44IqSZ0kjgxrdw8ST5lXZt6Gvuyk9G2zMNjelzftRCtqY80NAQ95I4Pfza3y8snzcea2ICsOhLBBpvTlNbY8GYDenePv5DzP/AGHkAV+GF0+Dw/YUknq9Tv8AZmCWEoKL/M831/0WjV97pdOaeq7tU4Ihb71mcGR54NaPOStT7pXVNzuVRcax/dKiokMkjvKfEOgHIDoAApC29arN3vwslJJmjt7iJMHg+bk7+rxHn3lGi97C0t2O89WcP/Uu0visR2UH+GHzfF+Wi8+ZVERbRzZ9Kfvmcso4DK/usg3YW/fv5Dh4+JHj4+VZdUwWXRzRT1lLBetQDjLFId6loz/BcAf31/j44HnHHz6IItVsuuqSB3ehY2CiyAf3+XIDhn+A0OPHyeJYzFHUVlU2ONkk9RK7gBlznuPi6kk+kqp/ibXBfM9CD+HpRmlectLq9ldq6TybbTtdZJXWbTV9rdb6qqhuezVTTRj7GKlPcWNHQAMA4BfSl1zqFrBDcKmO7Uv30FwjEzXelwyD5isdbTzu3d2CQ77i1uGk7zhgkDhxIyMgcsjxr9QUtTM+NkNPLI6UEsDWEl2M5IAHEDB5csLO5C1rIgsbjN66qSb6t38LcddPEyautNrvttnu+mYn009M3ulba3v3jG3/AGkTjxczxjm35Fi0kkjwwSSOcGN3WhxJ3W5JwM8hkk4HjK9dgutXZbxTXOifuzQPDgOjhyLT5CDg+QlXDXlvpaDUUjqBu7Q1kbKylHQRyDewPIDkehFeL3XmuH2M1t2tS7aKs00pJZJ3u00uF7NNLJOzVr2ViREVhomQ7O9SS6W1PT3IFxpye51LB99GefpHMebHVbVU08NTTx1EEjZIpGh7Ht4hwPIjyLTNTr2fdV9+W5+mKyXM9KN+lLj9lH1b6D/YeHALSxdK631w1Ov/AKV2l2dR4WbylmvB8V5/VeJLqIi8878IiIAiIgCIiAIiIAiIgCIiAoeK5l6/ofYvXWoLaBgUlzqIB5mSub4z4vGumi559pSg9jtuWqqbGN6rbP8ApY2SeM/w/wD7DkPT2TL/AJJR5orqaEeIqdFt9auyxomvtlJXR6iv4ZUQslb76Lk5oI+88RXrV8TToW33qQSbNQvSnpW4/uTdGfjJqD5Yf1E9yboz8ZNQfLD+oqP7jQ5sluM03wnJbke5M0Z01JqD5Yf1F4b72WNH2+yV9fFqG+ufTU0krWuMWCWtJAPvPIi2jQvq/QbjNRQp+7CnhcunxFN6+nUAhT92FPC5dPiKb19Op47uJEY6o3TREXNF5ob2wPDzd/yFN6liiA9VL/bA8PN3/IU3qWKID1XU4buY9PYolqzo5sI8DWkfimn+gFmvVYVsI8DWkfimn+gFmvVczW7yXVlyNNu3b4RbJ8UD10i13W/u2DYpYdpl8pLtdrrc6OWlpu92tpdzdI3i7J3mk5y7p5FhXuTNGfjJqD5Yf1F6+Fx1GnSjGTd0QcW2acelPStx/cm6M/GTUHyw/qJ7k3Rn4yag+WH9RbH9xoc2Y3GacKi3I9yZozH2yag+WH9RRd2itjukdmOl6GtoL1day5V1V3KGCoMe73MNJe/DWgnB3Bz++ClDHUaklGLd34GHF2IJCyHZrpqbWGvLNpuEOxXVTWSubzZEDvSOHmYHH0LHlsv2FdJ983u8ayqI8xUcYoaVxHDuj8OkPna0NHmkKtxNXsqTlx4deBhK7Ns6aGGmpoqanjbHDEwMjY0YDWgYAHkwrfrH7ULx+YT+rcrr0Vq1j9qF4/MJ/VuXLLVF5zFRUCzjYbo2h17tHodM3GqqaWmqYpXukp93fG5G5wxvAjjjxLrpzUIuT0WZrpXMI9Kelbj+5N0Z+MmoPlh/UT3JujPxk1B8sP6i0/7jQ5snuM07p55qeZs1PLJDK05a9ji1wPkI4hSLojbftI0pNH3vqGe5UrcZpbiTURuA6AuO+0fyXBSvqjslVUdK+XTWrY6iYD3tPX0/cw7h/tGE8c/xVrtq3Td70nfZrJqC3y0NdDxdHJghzTyc1wJDm8DxBOcHxFWRq0MTkrPwa+5FpxN4diW27Tu0cC3SM9ib81uXUMsgc2YYJLoncN4ADJHAjygZUsLlxba2rttwprhb6mSmq6aVssM0bsOY5pBDgRyIIBXQrYTr2PaJs8o728MZcIyaevjbwDZ2gZIHQOBa4fysdF5OOwao/ihoyyMrmfIiLzyYREQFCuV66oLXYdkzRn4x3/5Yf1F6Gz8TTob2/wAbe5CSbNOfSnpW4/uTdGfjJqD5Yf1E9yboz8ZNQfLD+ovS/uNDmyO4zTfCcluR7kzRnTUmoPlh/UXhvvZY0fb7JX18Wob659NTSSta4xYJa0kA+88iLaNC+r9BuM1GwhVFf9ndkp9S67slgq5ZYYLjXR08j4sb7Q5wBIyCMgHhkFbkpKKbeiIaldm/hD0z8bUvrmrpgFAVi7LukrRfKC7Qagvkk1FUx1DGvMW64scHAHDM4OFPq8DH4inXcdzhcuimgOi0N7YHh4u/5Cm9Sxb5DotDe2B4eLv+QpvUsUtl98+j9jE9CIR0XRzYT4GtI/FFP9ALnGOi6ObCfA1pH4op/oBbW1O7j1Iw1M06LFdsXgk1j8RVvqHrKuitmqLRDf8ATN0sVTLJFBcaOWklfHjea2RhYS3PDODkc14kX+JMtOYaLcb3JmjPxjv/AMsP6i05XUUMTTr33Hp7lDTQRZjsV0lRa52l2nS1wqaimpq3u2/LBjfbuQvkGMgjiWAcR1K2VHZM0Z+Md/8Alh/UWK2LpUZbs3n0MqLZpyEW4/uS9G/jJf8A5Yf1Fbr32SbO+md7CauroZw33orKdkjSePAlm7gHx8ceIqr+40G9fkzO4zWfSusdVaVmbLp7UFxt26d7chnd3Nxzn3zCS1w8hBC2l2B9oqPUlfTaZ1uyGluk7hFS18Q3Yqh54Br2/ePJ5Y4EnHveAOsm0rQeo9n9/wDYjUNK2N72l8E8RLop2D75jiBy5EEAjIyBkZxcZBB5YVlXD0sRG+WejRhNpnVAIFFPZh15NrrZlTyXCcy3a2P7zrHOOXSYALJD1983GT1c1ylVc3Ug6cnF6otTC559pK0ewm27U9MG4ZPV9+NOOB7s0SHH855HnBXQwrTbt1WfvXaFZr01m6yvtxicQPsnxPOT592Rg9AW7sye7WtzT+5iaujXldLNmF29ndnOnbuXBz6q2wSSEHOHmMbw9Dshc0vIt7ux7dvZLYfbqcuD326pnpHHxe/7oB/Vkat3asb01Lx+v/hCnqTGiIvDLR1WkXbc8MsPxTB9ORbu9VpF23PDLD8UwfTkW/szvvJkZ6EGdV0k2O+CPR3xFReoYubfVdJNjvgj0d8RUXqGLa2t+WJCBliIi8YtCIiAIiIAiIgKJ6FiWvdoujdCOpW6qvbLc6r3jA3uEkrnBuMnEbXEDiOJWMe6H2P8vbf/ANNq/wBkpxo1Jq8Yt+RhtEqZTKiv3Q2x78b/APptX+yT3Q2x78b/APptX+yUvh637X6MXXMlTKZUV+6G2Pfjf/02r/ZJ7obY9+N//Tav9knw9b9r9GLrmSplMqK/dDbHvxv/AOm1f7JPdDbHvxv/AOm1f7JPh637X6MXXMlTKZUV+6G2Pfjf/wBNq/2Se6F2P/jf/wBNq/2SfD1v2v0YuuZKfDmsR2q6oGltKTVMLsVtR+80vkeR9l5gMn5PGsqp5oqiCOeGRssMjQ9j2nLXNIyCD1BCsO0HTcOqNMVFtcAJ8b9O8/eSDkf7wfISowtvLe0NXGqq8PNUX+Ozt1NUnOc57nPJc4nJJPEk8yT1VByX0qYJaaokp54zHLE8skY7m1wyCF817R8caadnqFd71crRW0rYrfpyC2Sh+8ZY6qWQuGCC3DyQMnjkeJWgoouN3cnGo4RcUlZ63Sb8m02vJoydozsrkDcEtvbS/h0MDg30cHKxWWrNBeaKuzjveoZL/VcCsh0K03O23vTI4y1tOKilbz3pocu3QD1c3fCxTooxWbT/AJc267ajSqx5W6OLeXo0/Mmym1dcmbWTp+WjtwpxXEQObTgOi3t4mQHq57XYJ69MZVksmtrjdrZqFs1FQUtJTWuV0AggDTA9+6zDT4nOcXHnyC/FKe7bV9K3LIzX0lLO45z74Rlh9OWFYxaP8l2c36od/wC+1dNSMOP4O9KR/wCVv/4VrqnG2meX1zOgqY7EKT/G91Oo+qUU438M/p4WxhZLrre7305vkkiyQ8z43yY/swrLZbfUXa60ttpG5mqZBGzxDJxk+QDJJ6AFXTaBW09bqmobRnNHSNZSUw6COJoYCPIcE+lbL/MlyuznqX4cNUk+LSXjbN+llfqj4S3Kzuswo2abp2VgjDTWiqmLi4Ee+3C7dycHhjAzwVn6qhVVlRtoatSo6lrpZK2SS9bJXfi8wvdYLrVWW80t0o37s9NIHjjwcORacdCCQfJleEq76PsVTqTUNLaabIMrsyPx/wCGwcXO+TlnmSB1STVnfQlQVSVWKpX3m1a2t75fM2p07daa92Sku1ISYamMPbnm3oQfKCCD5QrgvJaaKmttvgoKSMR09OwRxt8QHlXrB4eNeK7XyPstPe3Fv62z6n6REWCwIiIAiIgCIiAIiIAiIgHVaOdtSh7z20uqMf57baef5C+P/wBPyebqd4h0Wo/b1oe56i0vc8f5xSTwZ/Jva7x//F8n1b2zpWrpc7/z5EZ6Gs+F0e2JVvshsi0nVZy42mnY4+NzGBrj8oK5xc1vp2SK7vzYRY2OOXUr6iB3ome4dPE4D0Le2rH/AI0+TI09SXERF4ZYOqtOsvtQvP5hP6tyu3VWnWX2oXn8wn9W5FqDmIFP3YU8Ll0+IpvX06gEKfuwp4XLp8RTevp10uO7iRRHVG6aIi5ovNDe2B4ebv8AkKb1LFEB6qX+2B4ebv8AkKb1LFEB6rqcN3MensUS1Z0c2EeBrSPxTT/QCzXqsK2EeBrSPxTT/QCzXquZrd5Lqy5BERQMhERAU6LRjti6qOoNrUtqhkLqSxwtpGgH3plPv5HefJa0/wAgLc7Wt+ptL6RuuoarBit9LJOWk43y0e9bnxk4HpXNG6VtTcrlVXGskMtTVTOmmf1c97i5x9JJK9TZdK83N8Ml1ZXUeR5l0T2A6TOjdlFltEsXc6x8PfNYCOPdpPfOB8rchnmaFpX2e9J+3LazZbXLF3Sjhm77rMjLe5RYcWuHicd1n88LoiFPatXSn5/b3FNcSvVWnWX2oXn8wn9W5XbqrTrL7ULz+YT+rcvIWpYcxB0Uvdj/AMPFo/IVPqXqIR0Uvdj/AMPFo/IVPqXrqcT3MunsULVG+aIi5YvKdFCPbC0TTai2ZTX+KAG52I93ZIBxdASBIw+QAh/k3OHMqb+isO0KmjrdBago5QNye11MbuGeDonD/up0ajpzUlwZhq5zNWxfYVv8lLra9acfJiCvoRUsaT/rInAYHlLZHZ/k+Ra6KU+yfVGl296e98Wsm74icMcwaeTA/rBq6XFxU6Ml4X9MymLs0b+oiLly8IiIAiIgCIiAdVadZfahefzCf1blduqtOsvtQvP5hP6tyLUHMTqs02GeGPSPxvT/AEwsL6rNNhnhj0j8b0/0wusrd3Lo/oULU6OoiLky8oOi0N7YHh4u/wCQpvUsW+Q6LQ3tgeHi7/kKb1LF6Oy++fR+xCehEI6Lo5sJ8DWkfiin+gFzjHRdHNhPga0j8UU/0Atrandx6kYamaoiLxC0ouV/VdUFyv6r2Nk/r8vcrqcCVeyb90Bpn+lf4SZb9nqtBOyb90Bpn+lf4SZb9nqqdqd8ui9zMNCqIi80mRR2p9JQao2QXSbuQNbaGG4Ur8cW7gzIPMY97h4w09FoL1XT/U1NHV6cudLKMxzUksb/ADFhBXMHovb2VNuEo/zP/wAKqiNhuwren0u0G82N0gbDcLd3YNP30kTxu4/mySH0LclaD9kqpNPt8sDd5rWztqY3ZOMg08jh16ua0AH+/C34C09px3a9+aX2JweQK167dVnFXs8s94a3MlBce5k+JkrDk/1mMC2F6qO+0fZ/ZrYlqila0F8NH323zwuEpx5SGEela2GluVovxMvNM55rbHsFXbfteqLE94HcZ4KuNvj32uY8j+oz5QtT1OPYmuwoNsL7e94DblbZYWtPV7C2QfI1j/lK9/HQ36El5lUXmbvoiLmi4dVpF23PDLD8UwfTkW7vVaRdtzwyw/FMH05Fv7M77yZGehBnVdJNjvgj0d8RUXqGLm31XSTY74I9HfEVF6hi2trfliQgZYiIvGLQiIgCIiAp5V57nW0ttt9RcK6dkFLTROmmlecNYxoy5x8gAyvQOK1n7au0U0Nrh2f2ufFRWtE9zc0/YQg+8jOORcRvEcDutHRysoUnWmoLiYbsjXnbNrep2ga/r9Qy7zaYnuNDC7/VQNJ3GkdCclx/jOOOGFhvRVRdVCChFRjoihu4REUgEREAREQBERAbk9jLaIL5peTRFzn3rjZ2b1GXHjLS54D+YSG9Peub4ithlzM0Dqi46N1fbtSWtx74opt4tJwJGHg9h8jmkg+LORxAXR7Sd9oNTabt9/tUvdKOugbNGTzAPNp8RByCOhBXPbQw/Z1N9aMtg7oh7tB6VNLXx6no2DuVSRHVtaPsXgcH/wA4cD5QOpUSLcK+2ylvNoqrXWM3qepjLH+Pj1HlBwQfGtTtSWirsN7qrVWNIlp3lu9j7IdHDzg5U8LV3o7r4fQ+ef1Ps34ev8RBfhnr4Pj669blvREW2cufe3VlRb6+CvpJCyeCQSRuHQj+8eMdQsk1fb6e5UvttskeKOod/ltO3iaOc8weu448QfLjhwWJrK9ktTNFrq30zHnuFW8wVER4slYQctcORHoVdRWW8tV80b2CaqtYaekmknxTeSa9bNcV4pGR6P8A8pqtn1Zkl0VRUUjz4t12+3+x+PQsZuwFLs2slOBg1tbUVbh/J3YwfNwd8izSg1lpy1mGOGSjrDFMZoo7dY+5BkmN0uaZJOeBjIAPJXrTd0iu16tlLT7OJYqKB2IquqhAFO3JJLQGADj4jz4rW33F3tlr9efU6NYalXpqlGqt5pLJb3CCv+G60i9Wtc2R7Rs9pljkr6j3l/uEJjo4fv6SFww6Vw6OcMgciOPmGFlfavq6muq5aysmfPUSu3pJHnJcf/z5AAF8VtQi1m9Wcvia6qWhBWjHJLjnq34vjyVkskiqIimaxRbC7CNKC0af9mauLFbcAHNBHFkX3o9PM+jxKKdk2ljqjVUUU7C630uJqokcCB9iz+cR8gdhbQNADcAYHiWji6v6F5naf0rs3ebxdReEfd+y8z9oiLQO6CIiAIiIAiIgCIiAIiIAiIgKdFrh28aDumidO3LH/gXJ8GfF3SMu/wDSWx4UM9smg772HV1RjPeNZTz+bLxH/wCotjBy3a8X429TEtDRVbm9hau7tsyu1A52XU12c4eRr4oyP7Q75VpmtpOwNXYn1bbHHi5tLOweburXf3tXtbRjeg3ysVQeZtYiIudLinRWrWP2o3n8wn9W5XXosd2m1PeWzjU1YHFncLRVSbwGSN2FxSOqBzRCn7sKeFy6fEU3r6dQCFsB2FI3nardpgPeMscrSc9TPBj6J+RdLju4kUR1RuiiIuaLzQ3tgeHm7/kKb1LFEB6qX+2B4ebv+QpvUsUQHqupw3cx6exRLVnRzYR4GtI/FNP9ALNeqwrYR4GtI/FNP9ALNeq5mt3kurLkERFAyEREBrr24tVex2h7dpWnkImu9R3WcA/6iIg4PneWEfyStOApP7T2q/bXtiu0sUgfR20i302OIxGSHnxEGQvIPiwo1o6earqoaWmjdLNM8RxMbzc5xAAHlJIHpXS4Kl2VFLi835lMndm2vYX0p3rp+76yqIgJa6UUdKSOUTMOeQfE55A88a2W6LH9nWnIdI6Gs2m4C0igpWxPc3k9+Mvd6XFx9KyDoufxFXtajnwZalYqrTrL7Ubz+YT+rcrt1XhvlI64WWtoGPDHVNPJCHEZDS5pGT8qqWpk5eKX+x/4d7R+QqfUvWae5J1H+N1q+byLNNinZ8vGgNolFqas1DQVsNPHKwwxQva478bm8zw65Xv4jG0JUpRUs2nzKlFpo2KREXgFo6q06y+1C8/mE/q3K7dVadZfahefzCf1bkWoOYvVSR2YPDvpb8vL6mRRv1UkdmDw76W/Ly+pkXVV+6l0ZQtUdCERFypeEREAREQBERAOqtOsvtQvP5hP6tyu3VWnWX2oXn8wn9W5FqDmJ1WabDPDHpH43p/phYX1WabDPDHpH43p/phdZW7uXR/QoWp0dREXJl5TkVod2wPDvePyFN6li3xUVbQthOitc6qqNR3ma7NrahrGvFPUNazDGhowCwkcAOq2sFXjQqOUtCMk2jQTkujewrjsa0j8U0/0AsA9y1s0/Cb/APO2fs1MGl7LR6c07b7FQGU0lBTsp4TK7L91owMkAZKvx2LhXilG+RiMbF1REXnEyi5X9V1QXK/qvY2T+vy9yupwJV7Jv3QGmf6V/hJlv2eq0E7Jv3QGmf6V/hJlv2eqp2p3y6L3Mw0KoiLzSZ47x/ois/N3/RK5ddV1FvH+iKz83f8ARK5ddV7Gyf1eXuVVOBJPZg8O+lvy8vqZF0H6rnx2YPDvpb8vL6mRdB+qp2r3q6e7JQ0KrzXOjhuFuqaCpbvQ1ML4ZB42uBB/sK9JQLzSZy5u1FNbbrV22oGJqWd8DxjHvmOLT/aCsr2FXY2TbDpW4b+432Rjhe7xNlPcnE+Tdec+TKuHaVs5su2/U1O1uGVFUKxp6O7s1shx/Oc4ehR7SzS09RHUQvLJYnh7HDmCCCD6CAurX/NS6r6oo0Z1NReGw3CK7WSgusH/AIVbTR1DP5L2hw/vXuK5QvB5LSLtueGaH4pg+nIt3TyWh/bDrW1e3K5QtcT3pTU8B4k4Pcw/HL+P0zxz1zj0NmK9fyIz0Ie5rpRsjjfDsp0jDIMPjslE1w8ogYubDWlzmta0ucTgADJJPIBdP9NUPsXp222zh/klLFBw/iNDf+y2drPKK6kafEuKIi8YsCIiAIiIDH9f6nt+jdIXHUlydinooi8MzgyP5NYPK5xAHnXOPVd9uOp9SV9/usplra6Z0srugzyaB0aAAAOgGOim/tm7RfZ3U0eibZUb1vtDy6sLTlslUcgtPkjHD+U5wPJa9r39nYfs4b71f0/mZVN52KoiL0SAREQFEUrbPdmenK3QJ1zr7VU2nLNNW95URio3zPneASTwBw3LXDgD9i7iMcb3bdn2wu73CntVr2tXJ1fWStgpmvs8rWuked1oJLGjiSBxcPOFrvEwV+NtbJ29UiW6yD0V81/pmt0brG56ZuDmyT0E24ZGjAe0gOa8DmA5rmkA8sqxK+MlJJrRkXkVREWQUC2W7FW0XvG6VGz+6T4p6xxntrnu+wmAy+MeIOA3gOHEHmXLWpfe3VlVbq+nuFDO+nq6aVs0MrDhzHtILXA+MEA+hU4iiq1Nwf8AGZTs7nUfkefoUV9oDShuFobqOjjzU0LcVAA4uh8f805PmJWQ7Gtc0u0HQNDqGEtZUuHca2Fv+pnaBvt5ngchw4ng4dVl80cc0T4ZWNex43XNcMhwPMFczFypT6FWOwkMZh5UZaNej4PyNMyiybaVpmTS2p56EAmlk/faZ56sPTztPD5D1CxjmvYjJSSa0Z8ir0J0KsqU1Zp2ZVZNsr8IVlzy74H9xWMosSW8muZnD1uxqxqWvutO3OzvYnKl0ttEEW668W6zQ7uO5W6jAIHiBawfSX7sGla+j1Zb6i5VGqrpJHMHCabcbA3geLgZHOx5sKL7ZqC0R6cgs12sMte2CoknjkjrjDgvDQQQGHON0dV5tUXuiulJbaO32x9vpqCN8bGPqe7F2+8vJLt1vU+IrV7Kby0v4L73Ome1cHGKqJOUlZpOUm73V1Zx3VbPNa2yWeVkREW4cmU6qsbHySNjiY5z3Hda1oySTwAHUklflSfsE0qLre3X6siDqSgcBE1w+ymxkH+bz85ChUmoRcnwNrA4SeMrxow4vXkuL8kStst0u3S2l4aWVo78n/fapw/hn73zAYHynqss4BE4Lx5Scndn16hRhQpxpQVkskfpERRLgiIgCIiAIiIAiIgCIiAIiIB1WBdoSh9kdierIN3e3bdJPj8liTP/AJMrPArZqug9ldLXW17u935RTU+PHvsLf+6lCW7JPkYOYYU99hyu7htZrqNzsNq7RKAM83tkjd/YN75VAilLsp1/eG3jTxc7EdQZ4Hcee9C8NH9YN/8A9XTYqO9RkvD6FMdUb/IiLly8p0UY9qK7ss+w7UTi8CSqiZRxD+EZHta7Hl3d4+hSctRu3BrmGuutu0LQTCRlA7vuv3SCBK5uI2HyhjnEj+OOoWxg6bqVopc7kZOyNaVtF2CbWXVmqr09mGsjp6WN2OZJe54z5N1nyrV1b59kzS79NbGrfJPGY6q7yOuMoPRr8CP/APbaw48pXs7RqKNFri2vuQgrsl1ERc8WmhvbA8PN3/IU3qWKID1Uv9sDw83f8hTepYogPVdThu5j09iiWrOjmwjwNaR+Kaf6AWa9VhWwjwNaR+Kaf6AWa9VzNbvJdWXIIiKBkp0WKbXNUN0Zs4vmot4Calpj3vkZzM8hkYx4t9zc+RZWtXO3ZqvcpbHoynk4yONwqwDx3RlkQ8oJMhx42tV2FpdrVUf5YxJ2RqnI98kjpJHOe9xLnOcSSSeOSTxJJUwdkXSftl2vUlbPHv0dkZ3/ACEjgZG4EQ8h3yHDx7hUPrdrsXaT9g9l8l+qIt2rvs/dhkYIgjJZGD5z3RwPieF72Pq9nRfjl6/6KoK7J2REXNlwREQBERAEREBRWbW8jINF3yaQ7rGW6oc44zgCNyvQUYdp7UsOm9jN8c6RrZ7lF7HU7Tze6UFrseaPfd6FKnFzmoriL2Ofqk7ssQun296YY04Ilnef5tPI7+0DHpCjEKeOxFZn121me6lh7lbLfI8u6CSQhjR6Wl59C6bFS3aMm+T+eRRHVG7KIi5cvCIiAIiIAiIgHVWnWX2oXn8wn9W5XbqrTrL7ULz+YT+rci1BzE6rNNhnhj0j8b0/0wsL6rNNhnhj0j8b0/0wusrd3Lo/oULU6OoiLky8IiIAiIgCIiAouV/VdUFyv6r2Nk/r8vcrqcCVeyb90Bpn+lf4SZb9nqtBOyb90Bpn+lf4SZb9nqqdqd8ui9zMNCqIi80meO8f6IrPzd/0SuXXVdRbx/ois/N3/RK5ddV7Gyf1eXuVVOBJPZg8O+lvy8vqZF0H6rnx2YPDvpb8vL6mRdB+qp2r3q6e7JQ0KoiLzSZpv267P3rr6yXtrN1lfbzC444OfE8knz7sjB6Frv0W5nbns/fezi1XhjcyW+4hjjjlHKxwP/maxaZro9nz3qC8Lr+eRTJZnQfsz3b2Z2H6ZnLiXwUxpHAniO4vdGP/ACtaR5CFJK147Ct2FVs5u9oc/L6G5d0A/gslY3A/rMefSp8uVfR2ygmr7jVwUdJC0vlmmeGMY0dS48AF4WJhu1pR8S2OaQulfSWu11Nyr52U9JSxOmnlecNYxoy4nyAAlc1Neagk1VrO8aimaWOuFW+drCcljCTut9DcD0KZ+0xtzi1hTv0lpJ8jbIH5q6sgtNYQchrRzEYODxwXEDgAOOv3Vexs7DOlHfms39Cucr5IzjYLpqTVe1rT9rEe/A2qbU1ORwEUR33A+IHd3QfG4Dqui5Wv/Y62bzaZ01NrC8U5jud4jDaeN7cOhpgcjPiLzhxHiazyrYDovO2hWVWrZaLL7k4qyKoiLSJBERAUUe7fNfxbPNntXdY3s9k6j/JrdE7jvTOB98R1a0ZcfMB1CkFxDQXE4A5laA9pXaG7X20GZ1HMXWW2F1NQAHLX8ffyj+WQMH+C1q2sFh+2qK+i1+3mRk7IjKeWWeeSeeR0ssri973ElznE5JJPEknJJPjX4RF0xSUz5V9aWnqKuqipKWCSeome1kUUbS5z3EgBrQOJJJAAHEkr5KYOyHW2ij2w08dyETKmro5oLbPK3ebDUkAtPEjiWh7RxyS4Ac8qurN04OSV7Iyld2L7HoPZpswsFE7a3FW3bUV0Ad7FW+cg0ER5PcWubvOBGOLiCSQ0O3S5fCbYXYdTf+2dnO0KzVVi+zqW3OQxVFC0c98BuT1+yDOnMe+UU7R26ij11eYtV1EtRe46t7KyWQ5L3A4BHADdIA3cADdxgAYVnttFWXOugoLdSTVdXO/chghYXve7oGtAJJ8gVCpVN3f7R3eb4ryX88TN1pYljtB6g08yy6U2eaSukVztunaV/fNXBkRVFU8jfcOJB5OdkEj98IBOFEUUkkMrJYnlkjHbzXDgQQcgjygqZaLYFV223xV+0TWdh0XHMwuZDUStmqDj+IHNB6HDXEjPLPBVpdlOzO6F8Fp222gVTThjK2hMDHnkBvve3+wOz0WKValThuptri7N5vXOxlptmU620nbdvM9s1hpDUtio74+gihvFrrJTFIyRnB0nDeJGCBndwWtGCTkKziw7AdDOjtmqLxX60usrhHUy2xzmU1FnGXAscN8tzxALz73i1p4LAdpeyfWOgYmVd2ooqq1yn96uVC/utO7OCMnALScjG8AD0JwVgeFilR3ordqNxWlsn0vqG89MySNs+zCbRM9PebNV+zGkbnh9tuTMOGCMiOQgYDxxwcAOAOACHNbHCnvY5U1lB2d9fVmp6oP0rLAaS20kzQ7frXDIdHk5aA4xngDxy4Y3DmAwVbh5yd4yd2na/P8A3zMNLUqiItgiTF2Utoh0Vr9tsuE+5Zr05kE5cfexS8RHJ5BklpPidnoFvaFyv6rfDsr7RDrjZ9HRV8+/erMG09VvH30sfHucvj4gEEn75pPULxtp4fSrHo/b7ehZB8DKdr+lxqbSr+9ot6vo8zU2Bxd/CZ/OH9oC1lIIJByCOYPRboYWC3PZVpK4XCorZaaoZLO8yOEcxa3J4nAWnQxCppqWhzO3dgzx1SNWhZS0d+PJ6PPh/wCGtSLY79x7Rv8Asqz9OU/ce0b/ALKs/TlbHxkPE8H/ABPHc4+r+xrii2O/ce0b/sqz9OU/ce0b/sqz9OU+Mh4j/E8dzj6v7GuKLY79x7Rv+yrP05T9x7Rv+yrP05T4yHiP8Tx3OPq/sa92e31V2ulPbaOPulRUSBjG9POT0AGST0AJW1+lrLTae0/SWilGY6dmC7GC9x4lx8pJyrPpbZ/pzTd09krdBL3yGFjXSyF26DzIz18qy777zLVr11Uslojpdg7Fls9SnVs5vLLRL/fHoj9IiLWOjCIiAIiIAiIgCIiAIiIAiIgCIiAIiIDmNrag9itZ3u1gbvedwqIMeLckc3H9iuGye5R2fafpi5TSMihgutO6Z7nBoazujQ8knAA3SeJwPHwV57Rdv9jdt2q6fd3d+uNRjH+1a2TPp38+nqo/XVQtUpK/FfVFDyZ0u9vGi/xvsH/EYf1labptZ2aW6IyVOuLC8DmKesZO7+rHk/2LnPwQLz1smPGRLfZtltU7Udujoprds+pZqiqeN0XOqj3I489WRu984+Le3fMVqnXVdTXVs1bWTyVFTPIZZpZHFznucSXOcTxJOScnqV8RxIwMkqXdk2wHWetaiCruNLLYbK4gvqqpmJJG/wDw4zhxyOTjhvHOTjB24U6OEi3p4vV/zkjDbky09nzZtVbRtcQU0sLxZaFzZrlMMgbnMRg/wnkY8YG8emF0EhjjiibFGxrGMAa1rRgNA5ADxKyaD0lY9E6bp7BYKUQUsPFzjxfM84y95HNxxz8wAAACv/ReHi8S8RO/BaFsY2KoiLWMmhvbA8PN3/IU3qWKID1Uv9sDw83f8hTepYogPVdThu5j09iiWrOjmwjwNaR+Kaf6AWa9VhWwjwNaR+Kaf6AWa9VzNbvJdWXIIiKBkoVzk24arOtNqN8vjJN+ldP3Gk8XcY/eMI8WQN4+VxW6/aM1WNIbIr1cI5AysqY+8qTjg90l97keVrd5/wDNXPRexsqlrU8l7+xXN8C56VstVqPUtssNEP8AKLhVMp2HoN5wGT5ACSfICul9jttLZrLRWihZ3OloqeOnhb4mMaGtHyBafdiLSfsrr+u1TURZp7LT7sJI4d3lBaMePDBJ6XN9O53RU7Uq71RQ4IzBZXKoiLzSY6r5zSMijdLK9rGNBc5zjgNA5knxL6K06y+1G8/mE/q3Is2Dye3fRf432D/iMP6ye3fRf432D/iMP6y5oIvZ/tS/f8ivtPA6X+3fRf432D/iMP6y/L9c6JY0udrDT7WgZJNyhAA/rLmkif2pfv8AkO08DoFq3brsw07SvkfqalucwGWQWw98uefEHN94P5zgtPdt21G77TdQsq6qPvO20gLaGha7e7mDjec44G892Bk4GAAAOGTHy9Ntoa25VsVDbqOorKqU4jhgiL3vPiDWgnPmC2qGCpUHvavm+BFybPMt7eydoGfRezjvy5Qdyut7e2qnY4EOjiDcRRuz1ALnEcwXkdFH/Z87Os9DXUuqdfwsEkRbLSWrIcA7mHTdMjgdwE/xjw3VtH0WhtDFxqf8cHdcycY2zKoiLyyYREQBERAEREA6q06y+1C8/mE/q3K7dVadZfahefzCf1bkWoOYnVZpsM8Mekfjen+mFhfVZpsM8Mekfjen+mF1lbu5dH9ChanR1ERcmXhERAEREAKsE2stIQTyQT6pscUsbi2Rj7hE1zXDgQQXcCFfui5n7SPCJqb42qvXOW3hMMsQ2m7WIylY6H+3jRfL23WD/iMP6y5oDkqovawuE+HvZ3vb5X+5XKVyVOyb90Bpn+lf4SZb9nqtBOyb90Bpn+lf4SZb9nqvM2p3y6L3Jw0KoiLzSZ47x/ois/N3/RK5ddV1FvH+iKz83f8ARK5ddV7Gyf1eXuVVOBJPZg8O+lvy8vqZF0H6rnx2YPDvpb8vL6mRdB+qp2r3q6e7JQ0CLHdYa40lpGAy6k1DQW443hHJJmVw/ixjLnegFQZrftXWWl7pT6PsVRcZQMNqq13cYgfGGDLnDzlpWlSw9Sr+RXRJuxKfaKs/s5sU1RRhm8+OjNU3hxzC4S8PL7zHlz5Vzx6KRNebaNomsWy09xv8tLRStLXUdAO4RFpGC12DvPBHRziFHfNe9gcPOhBqTWbvkVTabyJD2NbVrtswF6dabfTVctzijaDUOduRuj3t1xa3Bd9mRjI5qz6/2h6w11Vd21Lep6qNpzFTN95BH0y2Me9zjhk5J8ZWN0dLVVtUylo6aapnkOGRRML3uPiAAJJ8wUw7PuzftA1K+Oou0EenKB2CZKzjMRnjuxA72fI8tVtTsKUnUnZN8Xr5f6Cu8iGYo5JpWxRMc973BrWtGS4k4AAHEkngAFtD2duzzUGqptVbQaLucUeJKS0SjLnno+YdAOe4eJP2WBlpmTZZsY0Vs/3KqgojX3YDjcKzD5WnruD7GMc/sRnHMlSSvLxW0XNONPJc+P8AolGFs2AABgYwqoi8ssCIiAFAmF47xX0tptVZdK6TuVLRwPqJ34J3WMaXOPyAoCGO15tFGk9D+1u3VAbd74x0Z3Xe+hpuUj/IXfYDOObiDlq0h8yynarrOu15rm4akrd9gnfu08JORBA3gxni4DiSOBcXHqsXXTYTDqhTSerzf88CmTuwiItoiU86z7Zfs119qa+W6qsFouNJA2pZI26OjMUUG64fvjXuwHFv2WGkk44AlOz1bqO67aNM0Nwp46infVF7ongFrixjntBB4EZaCc88YV52zbVdf3TWV9s0upa2nttLX1NLFS0ju4M7m2RzQ125gv4DB3iVrVZzc+zgle1236acSSSSuz89qy82y87a7tJa2xuZSsipJ5mHPdpY2gPJ8oPvD/IWY089LsB2dUVTHSwT7RdR03dmOmYHexdOcgcCPsumDwLgc5DMOh7ZVbqe7bS9M22rYH01TdaeOZhHB7DI3eafIRkelX/tI3qa+batRzyl25T1PecTSeDWRAM4DPIkF3nceSrlTTcaHBK78bZJe7M31ZhtXVXvU99M9TLXXe6VbwMkulllceQA4k+IAcgMAL2XzRurbHRisvWmLzbqbgO7VNDJGwE8gXOaAD5Dx8imDTN4i2R7ArZqux00DtW6sqJo4q2aIP70p4nFp3M5GeDTg8CX5OQ0BWHQG3nWtBqGKLVN1fqCw1kgiuNHWxMkDonndeW8BggE4bndPIjHKXa1Hd04qyuuTduXDwMWXF5lr2NbVrlompNourXXfSVYO5V9rnw9gY7Ic6MO4B3Ekt4NcOB44cPnt90HS6K1NS1dilNRpm9wCttM+SR3N2CY8kZO7vNIJyd1zSTkleXtA6UotGbV7vZbY0soN5lRTRn/AFbJGh+55mklo8gCy65Su1B2QbfUVLGum07qJ1JDKeLhE9heW58WZWjHia3xKN1GUKsMlKyfjfR9UzOt1yLxU2O8bRuzJpSk0VE+rm0/WTR3S1wuaHOe4uc2bDiC4gOyAMk91djkVBF3td0s1Y6hu9uq7fVM+yhqYXRvH81wH9y+lgvt70/W9+2O7V1sqMYMtLO6NxHiO6RkeQ5Cnes1FddonZW1RetXzR3O52S6QNoKt0LGSRte+BrhloAOWvcPGc9SOGVv0HwcW/NNv5jKXU14REW4QAWa7FNdVGz3aDQ39he6jJ7hXxN/1kDiN7A6kcHAcOLRngSsKRRnBTi4y0YTsdSKCqpq+igrqOZk9NURtlhkYctexwBa4HxEEFffyrW3sUbQZLpZKnQVxkc+otjDUUDiM5py73zM/wAVzhjPRwA4NWyR4Lla9J0ZuD4F6dyqIirMhERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQEUbQdg2iNb6qqtSXiS6srakMbJ3vUNYw7jAwcC0nk0dVYfctbNfwm/8Aztn7NToitjiasUkpNJGN1PgQX7lrZp+E3/52z9mvXbuzNsspXh09FdK4A53Z65wB5cP3vd8X9qmnKZWfiq37n6jdXIxTSezfQulZGy2HS1so52cWz9xD5m//AFH5d/asrOURUyk5ZsyVREQBERARTtC2E6K1zqmo1HeZrsytqGsa8U9Q1rMMaGjALDjgB1Vg9y1s1/Cb/wDO2fs1OiK2OJqxSSk0kYsnwLXpayUenNO2+xW8ymkoKdlPCZHZfutGBkgDJwrr0TmiqeeZkIiIDCtqezexbR6Giob/AFNxjpqOUysjpZmsDnkYy7LTkgZA5Y3io/8Acs7Nfwi//O2fs1OnBFbCvUgrRk0YaRiezDQNg2d2GWzaebUdwlqHVEj6h4fI55a1vEgDgA0Y4LLOqcVXkqnJyd2ZCIiALzXGkirrfUUM+93KoidE/dODuuBBx8q9KJoCCvctbNPwm/8Aztn7NPctbNPwm/8Aztn7NTp6U9Kv+KrfuZiy5EF+5a2afhN/+ds/Zp7lrZp+E3/52z9mp09KelPiq37mLLkQ7aezZsqoXNdPaKy4EY/zmuk4nxkMLQf7lJGmdK6b0zTmDT1jt9rYRh3e0DWOf/KIGXeklXpVyq51Zz/NJsJJaBERQMhERAEREAREQBERAF5rjSRV1vqKGfe7lUROifunB3XAg4+VelE0BBXuWdmnSpv/AM7Z+zVx0v2c9Aad1Hb77b570aqgqG1EIlqmlhe05GQGAkZ8oUx+lPSrniarVnJmLLkVREVJkIiIAiIgKdFCt67NOzy63itulVPfBPWVD6iXcqmBoe9xccDczjJKmpFKFSdO7i7GGiC/ctbNPwm//O2fs09y1s0/Cb/87Z+zU6elPSrfiq37mLLkRPoLYHojReq6LU1nmu7q6j3+5Cepa5nv43MdkBg6PPXxKWVRVAVU6kpu8ndhIIiKJk+VTC2enkgfnckaWuxzwRhQf7lrZr+EX/52z9mp04JhThVnTvutow0mRHojs/6F0hqmh1Haprw6tonF0QmqWOYSWlpyAwZ4OPVS6qKoCxOpKbvJ3YSOdO33T82mdruorbKXFj6s1MDnEnMUuHtAJ4nAdunytKwZjXPeI2NLnE4AAznPAAY5lb+7U9immNourKG/3uqroTS03e74qYtZ3YBxc3ecQcY3nDgMnPMYWS6L2daJ0c1vtd05Q0czRjvgs7pMfPI/LvRlevHacI00rNu2fL1IOGZpRojYVtJ1WWSwWF9spXf+83Mmnbx5HdIL3DyhpHl4qdtDdlTTlBuVGrbzVXiXALqemHcIc9QSCXuHlBatjsqi06u0K08k7LwJKCRYtJaQ0xpSm7305Y6G2s3Q1zoIQHvH8Z/2TvO4nkr8VTmnJaTbebJFUREAREQBERAF85Y45onxSsa+N7S1zXDIcDwIIPML6IgOefaD2fv2ebQ6q3wRuFpq/wDKbc8gkdzcTmPJ5lh97zJxuk81Ha6Bdo7Z63aFs8npqWIOvFBmptx6ueB76P8AngY84aei5/Pa5jix7S1wOCD0xwIIPIro8DiO2p56rX7+ZTJWZRERbpEy/YxqKh0ptSsGoLmXNoqSpzO5rS4sY5rmF2ACTgOzgAk4wFJes9iVw1ffLvqfZ1qew6ppayqkqzTQ1TY6iLury/cIJLeGce+c0nxDkIF8qv2zuG+1Gu7LBpl7o7vJWxikc3OGv3gQXY+9GMuzwwDnhla9Wm97tIuzS4q6tqST4M+2kaqfRu0q1Vl2ppoJLPdYX1cDm4e3ucgL2kHkQAR51l/am0+bJtguVZCN6gvLWXKklad5sgkA3yD/ACw/h4iDyIX27Ws9on233Z1qc172xQsrnNILTUNYA7HmbuAjo4Ozxyr5s/1DpvaboCk2Ya5rmWu7W3PtdvMh960EYEDyfIAACQHBrRwc1u9U5u0a9smrPwTzv5P5GbaxPhs7u2k9e7KYdmOrr1T6fuVrqX1FjudRjuWHlznRSOJGM7zuZGfe4yW4Ps03sg01o26Raj2ja901NaaFwnZRW2qM8taWkFse6Wg4JAyGhxIyMjmI42gbL9b6Hq5Y73Y6g0zHYbXU7DJTSDJAIeBgZ8TsO8YCxS20FdcqtlHbqOorKmQ4ZDBE6R7vIGtBOfMFlU967pztF5u1nrrZ8Be2qzMi2s6vl13r+6amfB3tHUyBsEJPGOJjQxgPEjOBk44ZJwpE1vTe1DstaXsFSHRXLUd0dd3xHHCFrN1p4ciWmEjPHiR04fvQOyKl0xRR662wTNstmpnCSC1SYNVXvHFsZZngCcZaeJGchoy5R7te15cNomtai/1kYp4A0Q0VKDkU8LSd1vlJJJJ6knAAwBhKNSUYQ/LHV8LrRLnzY0T5s9OzLZTrLaG2SewUETaGGTuUtbVSiOGN2ASOrnEAgkNacAjOMjMjasGmdm+wS+bPhq626gv97r4pnxW078dKI3xucHOBI4dyxxwfffY4BK82su+KrslaSk0y8exNFXzNvzI8h7ahzjuF5H3vvzzP38fiGIKWYqVeV5OyT0SzyeV39g7RCIi3CARFKvZk2dnX20KJ9bAH2S1FtTXbwy2Q5O5Eeh3iDkeJruuFCrUVODnLRGUrs2M7JGzk6P0ML9cqcsvN7a2ZwePfQ0/ONnHiCQd8jhzAIy1TcOaNAAwBhFytWo6k3J6suWSKoiKBkIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgKeNaS9sLZ37V9aN1VbYNy03x5dIGjhDVc3jyb/F448Tv8gAt2uSxjadpCg1zoi46arwA2qj/AHmUjJhlbxY8eYgecZHVbGEruhUUuHHoYkrnNbKqvbqC019ivdZZrpA6CsopnQzMPRzSRwPUHGQRwIII4FeELp001dFAKljsrXywWHamyovk8dI+oo5aWgrJWgx01Q8tDXuBIwC3ebnIHvsHAJIihFCrTVSDi8rmU7O5le1XSWpdHayrbdqgSS1ssjpxVklzasOcT3Vrj9lkkk54g8Dggrx6f0Vq/UNBLX2TTN2uNLEcOmpqR8jc9QCAQ4jxDJGeSkHSG2aij0nSad2haRp9ZQWuQSWuWom3JIcDAjeS12+zkMHhgAEOGMeXU+37aHc7hTy2m4RadoaMjvSgt0bWxMaBgB2Qd8AYGD73hwaFRGWItu7quuLeT6JZ/YzZa3LXpPa/tM0XH7GUGoKttPCdw0ddG2ZsW7w3QJAXMA5YaQPIsjuXaX2p1dOIoa+20LgMGSChYXH+vvD5Avb2gizWOzbRO1SOKPv2shNtu72NDd6ojzuktA4ZLJSM/e7g6BQtaaCpul1pLZRR90qaudkELB9897g1oHnJAWKcKVWO/KKTzv1Wpltp2uZIKPaFtKuU1yFLfdS1MYxJMI3zCMcSGg4LWjqGjHXAWM3CirLbXS0NxpJ6SqhduyQzxlj2Ecw5pAIPkKn/ALQW0C+aFvdv2a6Fu89ptdhoYI5+9mNjfLOW75cXAZwWuaSARlxcTlWij28UV4paUbStA2nVddQuD6SuBFPIS0khsgDS1zSTxAAaccWkpCrVcVKMFuvRXs7cPANK+bzLls1ttVofYFq68a1mjprRqaiMNotczczVE+64RzNaT7wcQQcZIaHcA1pdr6sr2n68vu0LUr71e5gAMspqaMnuVMzPBrAfH1J5/IBiitoU5RvKWrzaWi8P9kW76FURFeYPpTQTVVTFTU0T5ZpXiOONgJc9xIAA6kkkAAeNdDdhOgYdnmz6kszmtdcZgKi4SjHvp3AZaD1a0YaD1xnmStduxhs69mdSS65ulPmhtTtyhDhwkqSM72PExvH+U5pHFpW4/ReHtPEb0uzjotepbBcSqIi8smEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQFE4LAdX2HaZXX2ap03r6htFtc1gjpZbOydzCAN475IJycnyK0jSu2v/etav8Al6P9ZWRppq+8l6/YwSonJQTb9Q7StPbfNL6H1Jq2jvdBdaWepl7jbI6cjdimLW5GT9lGDn0KZNRU91q7JVQWW4R264vjIp6l8IlbE7xlh4HzLFSluNZpp8c+duRlMuX9qKK/artr/wB61q/5ej/WXmrabbxp+nfW0140zq6OEF0lJJROpJ5W88Rlp3d7xZ4edS7JcJL5+6MXJdRYnss1xbNoGlIr5bY5Kdwe6GqpZTl9NM37JjvHjIIPUEcuS+Gu7Nr+5XKCXSWs6OxUrId2WGa1sqS9+T77eJGBjAx5FDce9uyyHiZmiiv2q7a/961q/wCXo/1lhm1y47Zdnum6a9TbRLdcGz10dII2WOKPBeHe+zk8scselWxoKTUVJZ9fsLmw/RDxCxTZ/atbWzv324aqpb/3XufevcLe2m7jje387pO9nLfNu+VZWR6VRJbrsszKKoi/EgcY3BrixxGA7GceVAftOai7s46xvmr9H3D20SxyXq13Sahqi2NrM7u6Qd1oAH2Rbw/gqUFKcHCTi9UYTCFRjp/Vt8rO0PqTR09Sx1noLVDU08PcmhzZHCPJ3vsj9k7gf+yy3Xdv1RcrTFBpPUFPY61tQHSVE1G2pDo91wLN0kAEktOf4uOqOm4tJ+HzM6mQ4wnNRX7VdtX+9a1f8vR/rK16h1Dth2eUL75qKKxausFOQa19BC+mrIY+sgaSWEDmQM+cDJE1RTyjJP197IxfwJo8qK36du9BfrFRXq1zieirYWzQyAYy1wyMjoehHQ5CxHtA6ju2ktkV71BY52U9wpO4dxkdGHgb9RGx3BwwfeuIVcYOUlFasy3Yz9U6Kz6Krqi5aNstyrHB9TVW+CeZwAAL3xtc4gDgOJPBYB2gtU6psFVo626WukNtqL5eWW+WeWmZMGh5a0O3XeIuzgEZWY03KW6g2SumPIor9qu2v/etav8Al6P9ZeS6O266UpH3JlXp7WtLA3fnpG0jqSqe0cT3LdJaXc+eeXBpJwp9iuEk/X3SI3Jf4qvNYxs11ladeaTpdR2cvbFKSySGT7OGQcHMd5Rz8oIPVZN1VTTi2mSB5p6FUqz6upL3XafqaXTt1itN0fudwq5acTtjw9pdlh4HLQ4eTOeiJXBd/QnoUV+1XbX/AL1rV/y9H+srfqKz7abNYLjd3bULXM2hpZakxiwRgvDGF27nJxnHiKuVKL/Uvn9iNyZP7k/uWE7DNQXPVOymxX+8zNmuFZE90z2sDA4iR7RgAADgByVo7Smrb5ovZhNfNPVLKaubVwxCR8TZAGuJBGHAhQVKTqdnxvYlfIk0KvBArFrSi1FX2N9Npi9wWa4mRpbVTUoqGhoPvhuEgcfGoJXYL4nBQ7sj1FrZ+17VuidWX+nvDLPSU8kc0NEynBdI1j84b4g/GCTyz1Uxf3qVSDg7P+XzCzCqoy2Eatvmqvbf7NVLJ/YzUFRRUu7E1m5CzG607o4kZ5nmss2j3Krs+z3Ud4t8gjrKG1VVTA8tDg2RkTnNODwOCORSVNxnuPUwncyDiigzZ9Btn1dou1akj2l22kZcIBMIXWKJ5ZknhvAjPLxBX72r7bGe/btQs8rhyZJYGNa7zkHI9CsdFJtOay6/YXJVCDmoet20HWekdZWzS+1C32s013k7hbb3ay4Qvl4YjlY7i1xyOIwOPAEZcJhVU6bha/EyiqIiwAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIDVjtsbO9+ODaJaoBlm7TXVrWniOUcp9OGHzs8RWqoXUK+WyivVnq7TcoRPR1kLoJ43cnMcMEf/AHXObaro2t0Frq46brd94gfv00zhgTwOyWPHTJHA44BwcOi9zZuI3o9nLVadP9FU1ncxdEReoQCIiAkDZptb1PoOz1VmoKW03O2VEvdnUlzpjLGyTABc0Nc0gkAc8jhnAOSspZ2jtUwvEtNpDQ9PM3iyWK1yB7D0IPdeYUKqqolhaU5XccySk1xPZfbrX3u81l4ulQ6orayZ008hABc4kk8BgAceAAAAwBwC8QTCqrkklZEQiIsgK7aP0/cdU6mt+nrTF3SrrphEwdGjm5zv4rQC4+IAq0HmtvOxZs69jrLNr+6QYqrg0w25rhxZBnDpPIXuGB/FbkcHLXxVdUKblx4dSUVdk86F01btIaSt2m7W3FLQwiMOIwZHc3Pdj75ziXHylXvqq5TkuXbbd2XBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAQVrv7sfZ78UVXqqpToeagvXf3Y+z34oqvVVSnQ81fX/LT6e7MIqiIqDJCew1gtu23avZIf8ANu/qatY0HDWPla9z+Hl3h8imwqFdkn3R21X+g+rKmrqr8T+ddF9EYWhQqFe2N4Mrb8fUv90imoqFe2N4Mrb8fUv90iYbvo9RLQmtERUGQiIgIO2RZ092itpOlTgRXDuV5gHT33GQjzumAP8AJU4HxqBNrVwo9EdpLRusrjVMorXcrdUW+tldwaAwOcC4/wAqSP0N8ivt1262Cu3rfs9ttz1neXjdiio6WRkMbjyMsj2gNaOZIyPKOJG1UpTqbs4rJpfLLN+RhNaHi0R/lPa015UQjeiprRSwSOHIPc2JwHyNPyHxKa1HWw7Q1w0la7ndNRVEdVqa/wBV37dJI/sWO4lsTfGG7zuPjcccAFI3VU12pSy4WXorBBeW5UcFwt9TQVTO6QVMToZW/wAJrgQR8hK9SKvQyQx2O6meXY1FRTuLjbrhU0o45Aw7fOPJl5Vy7Wf3P2pf6L/i4Vaex34Mrn8fVX90au3az+5+1L/Rf8XCt1/9v/69yK/KZps08HWmviil9S1Rr2lPtt2U/wDzZTesjUlbNeGzrTXxRS+parftA0PSawumma+prp6Z1gucdxibG0ESuY5pDXZ5D3vRa9OSjUu/H6GdUZiiIqjJB/Z7dHb9q21bTtODHRw3WKrgiH2LHSd038DkBwYB5ApwCgrYh90LtY/L0/8A/NTp0V2J/P5L6IwtCqIipMlAsf2l+DnUvxRVeqcsgCx/aX4OdS/FFV6pyR/MjBivZg8A+lvyEvrpFj/bP8CNT+f0/wBIrIOzB4B9LfkJfXSLH+2f4Ean8/p/pFbkP+3/APXuR/STWiItMmQps/8AusNpX5hQeohU1DooV2f/AHWG0r8woPUQqah0V2I/Mui+iMIhXssc9oX/AM21f/ZSBtj8EmsfiKt9Q9ebZjoWLRHs+Yrk+u9mLrLcnb0W53Ivx7wcTnGOfBenbH4I9Y/EVb6h6VJqdXejoEsi09nTwIaT/MG/SKkA9VH/AGdPAhpP8wb9IqQD1Ua3eS6sLQhjtkUrJdi81dndnt9wp6iB4HFrt7cyPLh5UvWup78ttJVgg93hZJlvL3wB4fKop7YHgHu/5em9cxSVo77UbN+YQerapy7mPV/RGFqXZERUEgiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiICig3te7OxqzRHtkt1PvXexsdId1vvpqbnIzylv2Y58nADLlOSo4NcN0gEHmCp0qjpTUo6ow80cseSKUe0ts7doDaHM2jhLbLdN6poCBhrOPv4h5WEjA/gub1JUXBdVSqKpFSjoyhqzsERFMBERAEREAREQGbbFNCVG0LaBQ2FgkbRA93r5m/6unbjeIPQuJDQePFwOMArolQUtNQ0UFDRwsgpqeJsUMTBhrGNADWjyAABRN2WNnftH2fMra+AMvd43airyPfRR8e5xeTAJJH8JxHHAUwLnMfiO2qWWi0LoKyKoiLSJBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAQVrv7sfZ78UVXqqpToeagvXf3Y+z34oqvVVSnQ81fX/AC0+nuzCKoiKgyQpsl+6O2rf0H1ampYtp3Q9qsetdQaspKitfXX7uXfUcr2mJnc2lrdwBoI4Hjkn0LKSrK01KSa5JeiSMJFeYUKdsXwZW34+pf7pFNXRYttJ0TatfWKCz3iorYIIauOra6le1ry9mQAS5rhjic8MpRmoVFJ8GGjKkRFWZCIiAg7ti0bmaDs+p4omvlsV5gqSHDILCS0jB4cXdz5qZrX3l7HwOt8cUdK+Nr4hGwNbukZGAPIsW24WX2wbI9T2sM33vt8ksTcc5I/3xg/rMC8nZ5vAvuxjS9bvbzmULaV5PPMJMRz/AFM+lXyd6CfJ/XT6MxxM/REVBkIiICFOx14Mrl8fVX90au3az+5+1L/Rf8XCsr2a6JtWgbFNZ7PUVs9PPVyVbnVT2ueHvABALWtGPejHDK9G0TSdu1xo6u0vdZquCjre590fTOa2QbkjZBgua4c2Dpyyth1Y/Edpwvf5kUsiuzXjs7018U0vqWrIOQXisdugtFlobVTPkfBRU8dPE6QguLWNDQSRgE4HHACsuv8ASR1bR01P7ZtSWHvd5f3Sy1/ez5MjG687pyOoHjVGTZIydeO73KgtFtqLlc6uGko6ZhkmmldutY0cySo2/cY//Vfan/zB/wD1ozYZpepnhl1JfdWaqZC/eZDers+eMHp71ob5eHXPHKkow4yyMFq7McU94rtbbQ5KeSCm1Lds0LXtw50EO+Gu9JeQfK0qahwXwo6ano6WKkpYI4KeFjY4o427rWNAwAAOQA6L7rFWe/Let/EZSsiqIiiCgWP7S/BzqX4oqvVOWQBY/tL8HOpfiiq9U5I/mRgxXsweAfS/5CT10ix/tn+BGo/P6f6RWQdmDwD6X/IS+ukWQ7TdEWraBpZ+nbzUVtPSPmZKX0j2tky08MFzXDHoWzKahiXJ8JX+ZjWNjKlQqvNR1qrZYzUF8q7lJtA19b2VRG9RUF47lTMAaGlrWbhwDjJGeZPjWukm82SMU2Wzx3HtP7Tq6kPdKeKCjp3yNOQJGxsYWk555jeMfxTnkpvWL7OtC6c0FZ5Lbp2kdEyV/dJ5pZC+Wd/Lee48+HQYA6DisoCnVmpyuvBeisYSsOixXbF4JNY/EVb6h6yrordqW009+07c7FWPljprjSS0kroiA9rJGFji0kEZw44yD5lXFpSTMmI9nXwI6U/MG/Scs/Vm0Vp6j0npW36ct8tRLSUEIhifO4GRwBJ98WgAnj0AV5KlUkpTbXFmNCIO2D4B7v8Al6b1zFJWjvtRs35hB6tqt+0nR1s15pKp01eJ6yCjqHse+Sle1sgLHBwwXNcOY8SvdrpGW+3U1DC57o6eJsTC/i4taMDOMccBSc06Sjyb+dvsOJ60RFWZCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiA+NRTU9QAKiCKUDlvsDsfKvj7G278ApP0LfqXsyiA8nsbbvwCl/Qt+pPY23fgFL+hb9S9fpT0oDyextu/AKX9C36k9jbd+AUv6Fv1L1+lPSgPJ7G278Apf0LfqT2Nt34BS/oW/UvX6U9KA8nsbbvwCl/Qt+pBbbcOIoKUf8A0W/UvX6U9KXAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREBiF20FaLltLs+vp6mvbc7RTvp4ImPZ3BzXtkaS8bpcT++Oxhw6LLk6IjbeoKoiIAiIgCIiAIiIAiIgPw9rZGlj2hzXDBBGQVi+zLRFr2f6Z9r1nqq+opBO+Zhq5Gvewu4loLWtG7keLPE8VlSqm87WAREQBERAEREAREQBERAEREAREQALw3y3Q3ezV1qqXyMgraeSnldGQHBr2lpIJBAODwyCvciAsOgdMUGjtJ0OmbZNUzUlCwsifUOa6QguLjktAGcuPIBX3mVXKpyRu7uwVREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQH/2Q==" alt="עתיד פלוס">
+  </div>
+  <div class="hero-title-row">
+    <span class="math-icon">📐</span>
+    <h1>מבחן סמינר – מכינת תוהו</h1>
+    <span class="math-icon">✏️</span>
+  </div>
+  <p>מתמטיקה כיתה ט׳ • מוכנות ל-5 יחידות לימוד</p>
+</div>
+
+<div class="container">
+
+  <div class="name-section">
+    <label for="studentName">שם מלא</label>
+    <input type="text" id="studentName" placeholder="הכניסו את שמכם כאן" autocomplete="name">
+  </div>
+
+  <!-- ==================== שאלה 1: פונקציה ריבועית ==================== -->
+  <div class="question-block">
+    <div class="question-header">
+      <div class="q-number">1</div>
+      <h2>פונקציה ריבועית</h2>
+    </div>
+    <div class="question-body">
+
+      <div class="sub-question" data-topic="func" data-correct="2">
+        <div class="sq-label">סעיף א׳</div>
+        <div class="sq-text">נתונה הפונקציה $f(x) = 2(x-3)^2 - 8$. מהן שיעורי הקודקוד?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="שגיאה בסימן ההזזה האופקית"><div class="option-letter">א</div><div class="option-text">$(-3,\;-8)$</div></div>
+          <div class="option" data-val="1" data-diag="בלבול בין מקדם a לקואורדינטת y"><div class="option-letter">ב</div><div class="option-text">$(3,\;2)$</div></div>
+          <div class="option" data-val="2" data-diag="מבין לעומק – זיהוי נכון של הזזות"><div class="option-letter">ג</div><div class="option-text">$(3,\;-8)$</div></div>
+          <div class="option" data-val="3" data-diag="החליף בין x ל-y בקודקוד"><div class="option-letter">ד</div><div class="option-text">$(-8,\;3)$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="func" data-correct="1">
+        <div class="sq-label">סעיף ב׳</div>
+        <div class="sq-text">באותה פונקציה, מהו תחום העלייה?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="בלבול – כש-a חיובי הפונקציה עולה מימין לקודקוד"><div class="option-letter">א</div><div class="option-text">$x &lt; 3$</div></div>
+          <div class="option" data-val="1" data-diag="מצוין – מזהה שכש-a חיובי, עולה מימין לקודקוד"><div class="option-letter">ב</div><div class="option-text">$x &gt; 3$</div></div>
+          <div class="option" data-val="2" data-diag="בלבול בין תחום עלייה לתחום חיוביות"><div class="option-letter">ג</div><div class="option-text">$x &gt; -8$</div></div>
+          <div class="option" data-val="3" data-diag="שגיאת סימן בהזזה"><div class="option-letter">ד</div><div class="option-text">$x &gt; -3$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="func" data-correct="2">
+        <div class="sq-label">סעיף ג׳</div>
+        <div class="sq-text">נתונה הפונקציה $f(x) = -(x-2)^2 + 4$ ונקודות החיתוך שלה עם ציר $x$ הן $(0,\;0)$ ו-$(4,\;0)$. מהו תחום השליליות?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="זה תחום החיוביות, לא השליליות"><div class="option-letter">א</div><div class="option-text">$0 &lt; x &lt; 4$</div></div>
+          <div class="option" data-val="1" data-diag="בלבול בין שליליות לירידה"><div class="option-letter">ב</div><div class="option-text">$x &gt; 2$</div></div>
+          <div class="option" data-val="2" data-diag="מצוין – מבין שפרבולה הפוכה שלילית מחוץ לשורשים"><div class="option-letter">ג</div><div class="option-text">$x &lt; 0$ או $x &gt; 4$</div></div>
+          <div class="option" data-val="3" data-diag="בלבול – חושב שהפונקציה תמיד שלילית"><div class="option-letter">ד</div><div class="option-text">לכל $x$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="func" data-correct="3">
+        <div class="sq-label">סעיף ד׳</div>
+        <div class="sq-text">מהן נקודות החיתוך של $f(x)=x^2-4x+3$ עם ציר $x$?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="זו נקודת חיתוך עם ציר y, לא ציר x"><div class="option-letter">א</div><div class="option-text">$(0,\;3)$</div></div>
+          <div class="option" data-val="1" data-diag="טעות בפירוק – סכום לא נותן −4"><div class="option-letter">ב</div><div class="option-text">$(4,\;0)$ ו-$(-1,\;0)$</div></div>
+          <div class="option" data-val="2" data-diag="טעות בסימנים"><div class="option-letter">ג</div><div class="option-text">$(-1,\;0)$ ו-$(-3,\;0)$</div></div>
+          <div class="option" data-val="3" data-diag="מצוין – פירק נכון וזיהה שבציר x מציבים y=0"><div class="option-letter">ד</div><div class="option-text">$(1,\;0)$ ו-$(3,\;0)$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="func" data-correct="3">
+        <div class="sq-label">סעיף ה׳</div>
+        <div class="sq-text">הפרבולה $f(x)=-x^2+4$ הוזזה 3 יחידות ימינה. מהו הביטוי האלגברי של הפונקציה החדשה?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="הזיז שמאלה במקום ימינה"><div class="option-letter">א</div><div class="option-text">$f(x) = -(x+3)^2+4$</div></div>
+          <div class="option" data-val="1" data-diag="בלבול בין הזזה אופקית לאנכית"><div class="option-letter">ב</div><div class="option-text">$f(x) = -x^2+7$</div></div>
+          <div class="option" data-val="2" data-diag="טעות בסימן a אחרי ההזזה"><div class="option-letter">ג</div><div class="option-text">$f(x) = (x-3)^2+4$</div></div>
+          <div class="option" data-val="3" data-diag="מבין לעומק – הזזה אופקית נכונה"><div class="option-letter">ד</div><div class="option-text">$f(x) = -(x-3)^2+4$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== שאלה 2: ביטויים אלגבריים ==================== -->
+  <div class="question-block">
+    <div class="question-header">
+      <div class="q-number">2</div>
+      <h2>ביטויים אלגבריים ופירוק לגורמים</h2>
+    </div>
+    <div class="question-body">
+
+      <div class="sub-question" data-topic="algebra" data-correct="1">
+        <div class="sq-label">סעיף א׳</div>
+        <div class="sq-text">מהו הפירוק לגורמים של $x^2 - 9$ ?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="שגיאה – לא השתמש בהפרש ריבועים"><div class="option-letter">א</div><div class="option-text">$(x-3)^2$</div></div>
+          <div class="option" data-val="1" data-diag="מצוין – שולט בנוסחת הפרש ריבועים"><div class="option-letter">ב</div><div class="option-text">$(x-3)(x+3)$</div></div>
+          <div class="option" data-val="2" data-diag="בלבול בסימנים"><div class="option-letter">ג</div><div class="option-text">$(x+9)(x-1)$</div></div>
+          <div class="option" data-val="3" data-diag="ניסה פירוק רגיל במקום הפרש ריבועים"><div class="option-letter">ד</div><div class="option-text">$x(x-9)$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="algebra" data-correct="3">
+        <div class="sq-label">סעיף ב׳</div>
+        <div class="sq-text">פרקו לגורמים עד הסוף: $2x^2 + 10x + 12$</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="פירוק חלקי – לא פירק עד הסוף, נשאר גורם שניתן לפירוק"><div class="option-letter">א</div><div class="option-text">$(2x+4)(x+3)$</div></div>
+          <div class="option" data-val="1" data-diag="שכח את הגורם המשותף 2 לחלוטין"><div class="option-letter">ב</div><div class="option-text">$(x+2)(x+3)$</div></div>
+          <div class="option" data-val="2" data-diag="טעות בסימנים"><div class="option-letter">ג</div><div class="option-text">$2(x-2)(x-3)$</div></div>
+          <div class="option" data-val="3" data-diag="מצוין – הוציא גורם משותף ופירק עד הסוף"><div class="option-letter">ד</div><div class="option-text">$2(x+2)(x+3)$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="algebra" data-correct="3">
+        <div class="sq-label">סעיף ג׳</div>
+        <div class="sq-text">תלמיד צמצם את השבר הבא:</div>
+        <div class="context-box">
+          <div class="step"><span class="step-num">נתון:</span> $\dfrac{x^2 + 5x}{x^2 - 25}$</div>
+          <div class="step"><span class="step-num">שלב 1:</span> $\dfrac{x(x+5)}{(x-5)(x+5)}$</div>
+          <div class="step"><span class="step-num">שלב 2:</span> $\dfrac{x}{x-5}$</div>
+        </div>
+        <div class="sq-text">מה נכון לגבי הפתרון?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="הפירוק נכון"><div class="option-letter">א</div><div class="option-text">שלב 1 שגוי – הפירוק לא נכון</div></div>
+          <div class="option" data-val="1" data-diag="לא מבחין בצורך בהגבלה"><div class="option-letter">ב</div><div class="option-text">הכל נכון, אין בעיה</div></div>
+          <div class="option" data-val="2" data-diag="חלקית נכון – זיהה הגבלה אחת אבל שכח שגם x לא יכול להיות 5"><div class="option-letter">ג</div><div class="option-text">הפתרון נכון, אבל חסרה הגבלה: $x$ לא יכול להיות שווה ל-$(-5)$</div></div>
+          <div class="option" data-val="3" data-diag="מצוין – מבין שצריך את כל ההגבלות מהמכנה המקורי"><div class="option-letter">ד</div><div class="option-text">הפתרון נכון, אבל חסרות שתי הגבלות: $x$ לא יכול להיות $5$ וגם לא $(-5)$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="algebra" data-correct="0">
+        <div class="sq-label">סעיף ד׳</div>
+        <div class="sq-text">מהו המכנה המשותף של $\dfrac{1}{x+2}$ ו-$\dfrac{1}{x^2-4}$ ?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="מצוין – מזהה ש-x²−4 כבר מכיל את x+2"><div class="option-letter">א</div><div class="option-text">$(x-2)(x+2)$</div></div>
+          <div class="option" data-val="1" data-diag="כפל מכנות בלי לחשוב – שיטת אלכסון"><div class="option-letter">ב</div><div class="option-text">$(x+2)(x^2-4)$</div></div>
+          <div class="option" data-val="2" data-diag="לא פירק את הפרש הריבועים"><div class="option-letter">ג</div><div class="option-text">$(x+2)^2$</div></div>
+          <div class="option" data-val="3" data-diag="לקח רק חלק מהפירוק"><div class="option-letter">ד</div><div class="option-text">$(x-2)$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="algebra" data-correct="1">
+        <div class="sq-label">סעיף ה׳</div>
+        <div class="sq-text">מהו הצעד הראשון הנכון בפישוט $\dfrac{x^2-4}{x+2} + \dfrac{3}{x-2}$ ?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="לא פירק את המונה לפני הפישוט"><div class="option-letter">א</div><div class="option-text">להכפיל את כל הביטוי ב-$(x+2)(x-2)$</div></div>
+          <div class="option" data-val="1" data-diag="מצוין – מצמצם קודם ואז מחבר"><div class="option-letter">ב</div><div class="option-text">לפרק $x^2-4$ ולצמצם עם $x+2$</div></div>
+          <div class="option" data-val="2" data-diag="מנסה לחבר שברים עם מכנות שונים בלי לפשט"><div class="option-letter">ג</div><div class="option-text">למצוא מכנה משותף מיד</div></div>
+          <div class="option" data-val="3" data-diag="צעד לא רלוונטי"><div class="option-letter">ד</div><div class="option-text">להוציא גורם משותף מהמונים</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== שאלה 3: משוואות ==================== -->
+  <div class="question-block">
+    <div class="question-header">
+      <div class="q-number">3</div>
+      <h2>משוואות ריבועיות ורציונליות</h2>
+    </div>
+    <div class="question-body">
+
+      <div class="sub-question" data-topic="equations" data-correct="3">
+        <div class="sq-label">סעיף א׳</div>
+        <div class="sq-text">מהם פתרונות המשוואה $x^2 - 5x + 6 = 0$ ?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="טעות בסימנים – אלה פתרונות של x²+5x+6=0"><div class="option-letter">א</div><div class="option-text">$x=-2 \;,\; x=-3$</div></div>
+          <div class="option" data-val="1" data-diag="טעות בפירוק – הסכום לא נותן −5"><div class="option-letter">ב</div><div class="option-text">$x=1 \;,\; x=6$</div></div>
+          <div class="option" data-val="2" data-diag="ערבב בין מכפלה לסכום"><div class="option-letter">ג</div><div class="option-text">$x=5 \;,\; x=6$</div></div>
+          <div class="option" data-val="3" data-diag="מצוין – פירוק נכון ומציאת שורשים"><div class="option-letter">ד</div><div class="option-text">$x=2 \;,\; x=3$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="equations" data-correct="2">
+        <div class="sq-label">סעיף ב׳</div>
+        <div class="sq-text">תלמיד פתר את המשוואה $x^2+4x=0$ וקיבל $x=-4$ בלבד. מה הטעות?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="לא נכון – הערך −4 הוא אכן פתרון"><div class="option-letter">א</div><div class="option-text">הפתרון $x=-4$ שגוי, התשובה היא $x=4$</div></div>
+          <div class="option" data-val="1" data-diag="לא צריך נוסחת שורשים כאן"><div class="option-letter">ב</div><div class="option-text">צריך להשתמש בנוסחת שורשים</div></div>
+          <div class="option" data-val="2" data-diag="מצוין – מבין שאסור לחלק ב-x כי מאבדים פתרון"><div class="option-letter">ג</div><div class="option-text">חילק ב-$x$ ואיבד את הפתרון $x=0$</div></div>
+          <div class="option" data-val="3" data-diag="לא מבין את מבנה המשוואה"><div class="option-letter">ד</div><div class="option-text">המשוואה הזו אין לה פתרון</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="equations" data-correct="1">
+        <div class="sq-label">סעיף ג׳</div>
+        <div class="sq-text">מהו תחום ההצבה של המשוואה $\dfrac{3}{x-1} + \dfrac{2}{x+1} = \dfrac{1}{x^2-1}$ ?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="מצא רק חלק מההגבלות"><div class="option-letter">א</div><div class="option-text">אסור להציב רק $x = 1$</div></div>
+          <div class="option" data-val="1" data-diag="מצוין – מזהה את כל הערכים שמאפסים מכנות"><div class="option-letter">ב</div><div class="option-text">אסור להציב $x = 1$ וגם אסור $x = -1$</div></div>
+          <div class="option" data-val="2" data-diag="לא מבין מה זה תחום הצבה"><div class="option-letter">ג</div><div class="option-text">אפשר להציב כל $x$</div></div>
+          <div class="option" data-val="3" data-diag="בלבול בסימנים"><div class="option-letter">ד</div><div class="option-text">אסור להציב $x = 0$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="equations" data-correct="0">
+        <div class="sq-label">סעיף ד׳</div>
+        <div class="sq-text">המשוואה $x^2+2x+5=0$ — כמה פתרונות יש לה?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="מצוין – מבין שדלתא שלילית = אין פתרונות"><div class="option-letter">א</div><div class="option-text">אין פתרונות (הדיסקרימיננטה שלילית)</div></div>
+          <div class="option" data-val="1" data-diag="לא בדק דיסקרימיננטה"><div class="option-letter">ב</div><div class="option-text">פתרון אחד</div></div>
+          <div class="option" data-val="2" data-diag="הניח שלכל ריבועית יש 2 פתרונות"><div class="option-letter">ג</div><div class="option-text">שני פתרונות</div></div>
+          <div class="option" data-val="3" data-diag="ניחוש"><div class="option-letter">ד</div><div class="option-text">שלושה פתרונות</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="equations" data-correct="2">
+        <div class="sq-label">סעיף ה׳</div>
+        <div class="sq-text">כתבו משוואה ריבועית שפתרונותיה הם $x=-2$ או $x=3$</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="טעות בסימנים – פתרונות אלה הם 2 ו-−3"><div class="option-letter">א</div><div class="option-text">$x^2+x-6=0$</div></div>
+          <div class="option" data-val="1" data-diag="הכפיל שורשים במקום (x−שורש)"><div class="option-letter">ב</div><div class="option-text">$x^2+6x-6=0$</div></div>
+          <div class="option" data-val="2" data-diag="מצוין – (x+2)(x−3) = x²−x−6"><div class="option-letter">ג</div><div class="option-text">$x^2-x-6=0$</div></div>
+          <div class="option" data-val="3" data-diag="ערבב סימנים"><div class="option-letter">ד</div><div class="option-text">$x^2-5x-6=0$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== שאלה 4: גיאומטריה ==================== -->
+  <div class="question-block">
+    <div class="question-header">
+      <div class="q-number">4</div>
+      <h2>גיאומטריה – מרובעים</h2>
+    </div>
+    <div class="question-body">
+
+      <div class="sub-question" data-topic="geo" data-correct="2">
+        <div class="sq-label">סעיף א׳</div>
+        <div class="sq-text">במרובע ABCD:‏ $AB \parallel CD$ ו-$AB = CD$. מהו המרובע <strong>בהכרח</strong>?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="טרפז דורש רק זוג אחד מקביל, אבל כאן גם שווים"><div class="option-letter">א</div><div class="option-text">טרפז</div></div>
+          <div class="option" data-val="1" data-diag="מלבן דורש זוויות ישרות – לא ידוע שיש"><div class="option-letter">ב</div><div class="option-text">מלבן</div></div>
+          <div class="option" data-val="2" data-diag="מצוין – זוג צלעות מקבילות ושוות = מקבילית"><div class="option-letter">ג</div><div class="option-text">מקבילית</div></div>
+          <div class="option" data-val="3" data-diag="מעויין דורש 4 צלעות שוות"><div class="option-letter">ד</div><div class="option-text">מעויין</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="geo" data-correct="1">
+        <div class="sq-label">סעיף ב׳</div>
+        <div class="sq-text">במקבילית ABCD, האלכסונים מתחצים בנקודה O. ידוע גם ש-$AC = BD$. מהו סוג המרובע?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="מעויין = אלכסונים מאונכים, לא שווים"><div class="option-letter">א</div><div class="option-text">מעויין</div></div>
+          <div class="option" data-val="1" data-diag="מצוין – מקבילית עם אלכסונים שווים = מלבן"><div class="option-letter">ב</div><div class="option-text">מלבן</div></div>
+          <div class="option" data-val="2" data-diag="ריבוע דורש גם אלכסונים מאונכים"><div class="option-letter">ג</div><div class="option-text">ריבוע</div></div>
+          <div class="option" data-val="3" data-diag="זה כבר מקבילית, השאלה מה עוד"><div class="option-letter">ד</div><div class="option-text">מקבילית רגילה</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="geo" data-correct="3">
+        <div class="sq-label">סעיף ג׳</div>
+        <div class="sq-text">טענה: "כל ריבוע הוא מעויין" ו-"כל מעויין הוא ריבוע". מה נכון?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="בלבול ביחסי הכלה"><div class="option-letter">א</div><div class="option-text">שתי הטענות נכונות</div></div>
+          <div class="option" data-val="1" data-diag="ההפך – ריבוע הוא מקרה פרטי של מעויין"><div class="option-letter">ב</div><div class="option-text">שתי הטענות שגויות</div></div>
+          <div class="option" data-val="2" data-diag="בלבול בכיוון ההכלה"><div class="option-letter">ג</div><div class="option-text">רק הטענה השנייה נכונה</div></div>
+          <div class="option" data-val="3" data-diag="מצוין – מבין היררכיה של מרובעים"><div class="option-letter">ד</div><div class="option-text">רק הטענה הראשונה נכונה</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="geo" data-correct="0">
+        <div class="sq-label">סעיף ד׳</div>
+        <div class="sq-text">במעויין ABCD, ידוע ש-$\angle A = 60°$ ואורך הצלע 10 ס"מ. מהו אורך האלכסון הקצר?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="מצוין – במעויין עם זווית 60° נוצר משולש שווה צלעות"><div class="option-letter">א</div><div class="option-text">10 ס"מ</div></div>
+          <div class="option" data-val="1" data-diag="בלבול – זה חצי אלכסון, לא האלכסון"><div class="option-letter">ב</div><div class="option-text">5 ס"מ</div></div>
+          <div class="option" data-val="2" data-diag="חישוב שגוי"><div class="option-letter">ג</div><div class="option-text">20 ס"מ</div></div>
+          <div class="option" data-val="3" data-diag="זה האלכסון הארוך, לא הקצר"><div class="option-letter">ד</div><div class="option-text">$10\sqrt{3}$ ס"מ</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="geo" data-correct="1">
+        <div class="sq-label">סעיף ה׳</div>
+        <div class="sq-text">במלבן, אורך הצלעות 6 ו-8. מהו אורך האלכסון?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="חיבר צלעות במקום פיתגורס"><div class="option-letter">א</div><div class="option-text">14</div></div>
+          <div class="option" data-val="1" data-diag="מצוין – שימוש נכון במשפט פיתגורס"><div class="option-letter">ב</div><div class="option-text">10</div></div>
+          <div class="option" data-val="2" data-diag="ממוצע הצלעות – לא רלוונטי"><div class="option-letter">ג</div><div class="option-text">7</div></div>
+          <div class="option" data-val="3" data-diag="שורש של סכום במקום סכום ריבועים"><div class="option-letter">ד</div><div class="option-text">$\sqrt{14}$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== שאלה 5: אי-שוויונות ==================== -->
+  <div class="question-block">
+    <div class="question-header">
+      <div class="q-number">5</div>
+      <h2>אי-שוויונות</h2>
+    </div>
+    <div class="question-body">
+
+      <div class="sub-question" data-topic="ineq" data-correct="1">
+        <div class="sq-label">סעיף א׳</div>
+        <div class="sq-text">פתרו: $3x - 7 > 2x + 1$</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="טעות בהעברת אגפים"><div class="option-letter">א</div><div class="option-text">$x > -6$</div></div>
+          <div class="option" data-val="1" data-diag="מצוין – פתרון נכון של אי-שוויון ממעלה ראשונה"><div class="option-letter">ב</div><div class="option-text">$x > 8$</div></div>
+          <div class="option" data-val="2" data-diag="הפך כיוון בלי סיבה"><div class="option-letter">ג</div><div class="option-text">$x < 8$</div></div>
+          <div class="option" data-val="3" data-diag="טעות חישובית"><div class="option-letter">ד</div><div class="option-text">$x > 6$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="ineq" data-correct="0">
+        <div class="sq-label">סעיף ב׳</div>
+        <div class="sq-text">פתרו: $-2x > 6$</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="מצוין – מבין שחילוק במספר שלילי הופך כיוון"><div class="option-letter">א</div><div class="option-text">$x < -3$</div></div>
+          <div class="option" data-val="1" data-diag="שכח להפוך כיוון – טעות קלאסית"><div class="option-letter">ב</div><div class="option-text">$x > -3$</div></div>
+          <div class="option" data-val="2" data-diag="טעות בסימן ובכיוון"><div class="option-letter">ג</div><div class="option-text">$x > 3$</div></div>
+          <div class="option" data-val="3" data-diag="טעות בחילוק"><div class="option-letter">ד</div><div class="option-text">$x < 3$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="ineq" data-correct="2">
+        <div class="sq-label">סעיף ג׳</div>
+        <div class="sq-text">מהו הפתרון של המערכת: $x > 2$ <strong>וגם</strong> $x < 7$ ?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="בלבול – ה&quot;או&quot; מרחיב, ה&quot;וגם&quot; מצמצם"><div class="option-letter">א</div><div class="option-text">$x > 2$ או $x < 7$ (כל מספר)</div></div>
+          <div class="option" data-val="1" data-diag="לקח רק תנאי אחד"><div class="option-letter">ב</div><div class="option-text">$x > 2$</div></div>
+          <div class="option" data-val="2" data-diag="מצוין – &quot;וגם&quot; = חיתוך התחומים"><div class="option-letter">ג</div><div class="option-text">$2 < x < 7$</div></div>
+          <div class="option" data-val="3" data-diag="הפך בין &quot;או&quot; ל&quot;וגם&quot;"><div class="option-letter">ד</div><div class="option-text">אין פתרון</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="ineq" data-correct="3">
+        <div class="sq-label">סעיף ד׳</div>
+        <div class="sq-text">מהו הפתרון של המערכת: $x < -1$ <strong>או</strong> $x > 5$ ?</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="בלבול בין &quot;או&quot; ל&quot;וגם&quot; – אין מספר שגם קטן מ-−1 וגם גדול מ-5"><div class="option-letter">א</div><div class="option-text">$-1 < x < 5$</div></div>
+          <div class="option" data-val="1" data-diag="לקח רק חלק מהפתרון"><div class="option-letter">ב</div><div class="option-text">$x > 5$ בלבד</div></div>
+          <div class="option" data-val="2" data-diag="חושב ש&quot;או&quot; = הכל"><div class="option-letter">ג</div><div class="option-text">כל $x$</div></div>
+          <div class="option" data-val="3" data-diag="מצוין – &quot;או&quot; = איחוד התחומים"><div class="option-letter">ד</div><div class="option-text">$x < -1$ או $x > 5$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+      <div class="sub-question" data-topic="ineq" data-correct="1">
+        <div class="sq-label">סעיף ה׳</div>
+        <div class="sq-text">פתרו את אי-השוויון $x^2 - 4x - 5 \leq 0$</div>
+        <div class="options">
+          <div class="option" data-val="0" data-diag="הפך בין פנים לחוץ – זה תחום שבו הפונקציה חיובית"><div class="option-letter">א</div><div class="option-text">$x \leq -1$ או $x \geq 5$</div></div>
+          <div class="option" data-val="1" data-diag="מצוין – פירק נכון ל-(x-5)(x+1) וזיהה שהביטוי שלילי בין השורשים"><div class="option-letter">ב</div><div class="option-text">$-1 \leq x \leq 5$</div></div>
+          <div class="option" data-val="2" data-diag="מצא את השורשים נכון אבל כתב &quot;או&quot; במקום &quot;וגם&quot;"><div class="option-letter">ג</div><div class="option-text">$x = -1$ או $x = 5$</div></div>
+          <div class="option" data-val="3" data-diag="טעות בפירוק לגורמים"><div class="option-letter">ד</div><div class="option-text">$-5 \leq x \leq 1$</div></div>
+        </div>
+        <div class="diagnostic-tag"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="submit-section">
+    <button id="submitBtn" onclick="submitExam()">סיימתי – בדקו את המבחן</button>
+  </div>
+
+  <div class="results-card" id="resultsCard">
+    <h2>🎉 תודה שמילאת את המבחן!</h2>
+    <p style="font-size:1.15rem; color:var(--text-dim); margin-top:12px;">התשובות נשלחו בהצלחה. בהצלחה בהמשך הדרך!</p>
+    <div class="status-msg" id="statusMsg"></div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '$', right: '$', display: false}
+    ],
+    throwOnError: false
+  });
+});
+
+document.querySelectorAll('.option').forEach(opt => {
+  opt.addEventListener('click', function() {
+    const parent = this.closest('.sub-question');
+    if (parent.classList.contains('locked')) return;
+    parent.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    this.classList.add('selected');
+  });
+});
+
+function submitExam() {
+  const name = document.getElementById('studentName').value.trim();
+  if (!name) { alert('נא להזין שם מלא'); document.getElementById('studentName').focus(); return; }
+
+  const subs = document.querySelectorAll('.sub-question');
+  let correct = 0, total = subs.length, unans = 0;
+  const topicStats = {}, answers = {};
+
+  subs.forEach((sq, idx) => {
+    sq.classList.add('locked');
+    const topic = sq.dataset.topic, correctVal = sq.dataset.correct;
+    const selected = sq.querySelector('.option.selected');
+    if (!topicStats[topic]) topicStats[topic] = { correct: 0, total: 0 };
+    topicStats[topic].total++;
+
+    if (!selected) {
+      unans++;
+      answers['q'+(idx+1)] = 'לא נענתה';
+      return;
+    }
+
+    const val = selected.dataset.val, diag = selected.dataset.diag;
+    answers['q'+(idx+1)] = ['א','ב','ג','ד'][val] + ' (' + diag + ')';
+
+    if (val === correctVal) {
+      correct++; topicStats[topic].correct++;
+    }
+  });
+
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitBtn').textContent = 'המבחן נשלח ✓';
+
+  // הסתר את השאלות והראה תודה
+  document.querySelectorAll('.question-block, .name-section').forEach(el => el.style.display = 'none');
+  const card = document.getElementById('resultsCard');
+  card.style.display = 'block';
+
+  const topicNames = { func:'פונקציה ריבועית', algebra:'ביטויים אלגבריים', equations:'משוואות', geo:'גיאומטריה', ineq:'אי-שוויונות' };
+
+  sendToSheets(name, Math.round((correct / total) * 100), correct, total, topicStats, topicNames, answers);
+}
+
+function sendToSheets(name, pct, correct, total, topicStats, topicNames, answers) {
+  const msg = document.getElementById('statusMsg');
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx245x64nRzdVAN_XL5n8BKfbyI2VmbEN5IwjmJE3CP2zvc-vBjaiStdIKfirm4QAYr4Q/exec';
+  if (!SHEETS_URL) {
+    msg.className = 'status-msg sending';
+    msg.textContent = 'לא הוגדר חיבור ל-Google Sheets. הציון נשמר אצלך בלבד.';
+    return;
+  }
+  msg.className = 'status-msg sending'; msg.textContent = 'שולח תוצאות...';
+  const topicBreakdown = {};
+  for (const [key, stats] of Object.entries(topicStats)) topicBreakdown[topicNames[key]] = stats.correct+'/'+stats.total;
+  fetch(SHEETS_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name, score:pct, correct, total, topics:JSON.stringify(topicBreakdown), answers:JSON.stringify(answers), timestamp:new Date().toLocaleString('he-IL') })
+  }).then(() => { msg.className = 'status-msg sent'; msg.textContent = '✓ התוצאות נשלחו בהצלחה'; })
+  .catch(() => { msg.className = 'status-msg error'; msg.textContent = 'שגיאה בשליחה. צלמו מסך ושלחו למורה.'; });
+}
+</script>
+
+</body>
+</html>
