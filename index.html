@@ -838,7 +838,7 @@ function submitExam() {
 
 function sendToSheets(name, pct, correct, total, topicStats, topicNames, answers) {
   const msg = document.getElementById('statusMsg');
-  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzxZGpUd9fh5FR9-ZqZZQVjyZQWvvsuoZ5gxSckFOEVqMG9PZDmAjEiqFWL5f1GPz9hXw/exec';
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx245x64nRzdVAN_XL5n8BKfbyI2VmbEN5IwjmJE3CP2zvc-vBjaiStdIKfirm4QAYr4Q/exec';
   if (!SHEETS_URL) {
     msg.className = 'status-msg sending';
     msg.textContent = 'לא הוגדר חיבור ל-Google Sheets. הציון נשמר אצלך בלבד.';
